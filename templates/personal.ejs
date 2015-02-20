@@ -1,0 +1,270 @@
+<% layout('/layout/main') -%>
+
+<div class="container">
+	<div class="row">
+		<div class="col-sm-4">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-sm-12">
+						<h2><%- user.username %></h2>
+						<hr>
+						<h4>Today: Tue, 10 Feb, 2015</h4>
+						<hr>
+						<form style="font-size: 16px;" name="visitForm">
+							<div class="checkbox">
+								<label>
+								    <input type="checkbox" <% if (visitedGym) {%> checked <% } %> name="gymVisit">
+								    Visited Gym
+								</label>
+							</div>
+							<div class="checkbox">
+								<label>
+								    <input type="checkbox" <% if (visitedPool) {%> checked <% } %> name="poolVisit">
+								    Visited Pool
+								</label>
+							</div>
+							<div class="checkbox">
+								<label>
+								    <input type="checkbox" <% if (visitedRun) {%> checked <% } %> name="runVisit">
+								    Went Running
+								</label>
+							</div>
+							<div>
+								<button type="submit" class="btn btn-primary btn-block">
+									Save		
+								</button>
+							</div>
+							
+						</form>
+
+						<hr>
+
+						<div id="successSaveAlert" class="alert alert-success  alert-dismissible" role="alert" hidden>
+							<button hidden type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							SUCCESS! 
+						</div>
+						
+					</div>
+				</div>
+				<div class="row hidden">
+					<div class="col-sm-12">
+						<h3>Users</h3>
+						<hr>
+						<table class="table table-bordered">
+							<tr><td>username</td></tr>
+							<tr><td>Саня</td></tr>
+							<tr><td>Федык</td></tr>
+							<tr><td>Шак</td></tr>
+							<tr><td>Андрей</td></tr>
+							<tr><td>Роста</td></tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-8">
+			<h2>Your hard week</h2>
+			<table class="table">
+				<colgroup>
+			        <col <% if (dayOfWeek === 'mon') { %> class="info" <% } %> ></col>
+			        <col <% if (dayOfWeek === 'tue') { %> class="info" <% } %> ></col>
+			        <col <% if (dayOfWeek === 'wed') { %> class="info" <% } %> ></col>
+			        <col <% if (dayOfWeek === 'thu') { %> class="info" <% } %> ></col>
+			        <col <% if (dayOfWeek === 'fri') { %> class="info" <% } %> ></col>
+			        <col <% if (dayOfWeek === 'sat') { %> class="info" <% } %> ></col>
+			        <col <% if (dayOfWeek === 'sun') { %> class="info" <% } %> ></col>
+			    </colgroup>
+				<tr>
+					<td><b>Mon</td>
+					<td><b>Tue</td>
+					<td><b>Wed</td>
+					<td><b>Thu</td>
+					<td><b>Fri</td>
+					<td><b>Sat</td>
+					<td><b>Sun</td>
+				</tr>
+				<tr>
+					<td>
+						<% if (weekArray[0].gym) { %>
+						<span class="label label-success">
+						gym
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[1].gym) { %>
+						<span class="label label-success">
+						gym
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[2].gym) { %>
+						<span class="label label-success">
+						gym
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[3].gym) { %>
+						<span class="label label-success">
+						gym
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[4].gym) { %>
+						<span class="label label-success">
+						gym
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[5].gym) { %>
+						<span class="label label-success">
+						gym
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[6].gym) { %>
+						<span class="label label-success">
+						gym
+						</span>
+						<% } %>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<% if (weekArray[0].pool) { %> 
+						<span class="label label-info">
+						pool 
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[1].pool) { %> 
+						<span class="label label-info">
+						pool 
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[2].pool) { %> 
+						<span class="label label-info">
+						pool 
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[3].pool) { %> 
+						<span class="label label-info">
+						pool 
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[4].pool) { %> 
+						<span class="label label-info">
+						pool 
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[5].pool) { %> 
+						<span class="label label-info">
+						pool 
+						</span>
+						<% } %>
+					</td>
+					<td>
+						<% if (weekArray[6].pool) { %> 
+						<span class="label label-info">
+						pool 
+						</span>
+						<% } %>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<% if (weekArray[0].running) { %> 
+						<span class="label label-warning">
+						running
+						</span>
+						 <% } %>
+					</td>
+					<td>
+						<% if (weekArray[1].running) { %> 
+						<span class="label label-warning">
+						running
+						</span>
+						 <% } %>
+					</td>
+					<td>
+						<% if (weekArray[2].running) { %> 
+						<span class="label label-warning">
+						running
+						</span>
+						 <% } %>
+					</td>
+					<td>
+						<% if (weekArray[3].running) { %> 
+						<span class="label label-warning">
+						running
+						</span>
+						 <% } %>
+					</td>
+					<td>
+						<% if (weekArray[4].running) { %> 
+						<span class="label label-warning">
+						running
+						</span>
+						 <% } %>
+					</td>
+					<td>
+						<% if (weekArray[5].running) { %> 
+						<span class="label label-warning">
+						running
+						</span>
+						 <% } %>
+					</td>
+					<td>
+						<% if (weekArray[6].running) { %> 
+						<span class="label label-warning">
+						running
+						</span>
+						 <% } %>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+
+<script>
+
+$(document.forms['visitForm']).on('submit', function() {
+	var form = $(this);
+
+    $.ajax({
+		url: "/visit",
+		method: "POST",
+		data: form.serialize(),
+		statusCode: {
+			200: function(visit) {
+				window.location.href = "/personal";
+				$('#successSaveAlert').show();
+			  	setTimeout(function() {
+			  		$('#successSaveAlert').hide();
+				}, 2000);
+			},
+			403: function(jqXHR) {
+				var error = JSON.parse(jqXHR.responseText);
+			}
+		}
+	});
+	return false;
+});
+
+</script>
