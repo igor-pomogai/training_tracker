@@ -6,7 +6,10 @@ module.exports = function(req, res, next) {
 	req.visitedPool = res.locals.visitedPool = false;
 	req.visitedRun = res.locals.visitedRun = false;
 
-	Visit.findOne({userId: req.session.user}, function(err, visit) {
+	var today = new Date();	
+	var todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+
+	Visit.findOne({userId: req.session.user, visitDate: todayDate}, function(err, visit) {
 		if (err) return next(err);
 
 		if (visit) {

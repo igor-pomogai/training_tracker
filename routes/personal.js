@@ -2,18 +2,18 @@ var Visit = require('models/visit').Visit;
 var log = require('libs/log')(module);
 
 exports.get = function(req, res) {
-	console.log(req.session);
-	console.log(res.locals);
+	//console.log(req.session);
+	//console.log(res.locals);
 
 	res.render('personal');
 };
 
 exports.post = function(req, res) {
 	var today = new Date();	
-	var todayDate = new Date(today.getFullYear(), today.getMonth(), today.getUTCDate());
+	var todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
 
 	Visit.findOne({userId: req.session.user, visitDate: todayDate}, function(err, loadedVisit) {
-		if (err) console.log(err);
+		if (err) log.info(err);
 
 		var visit;
 

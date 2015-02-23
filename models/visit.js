@@ -49,4 +49,6 @@ var visitSchema = new Schema({
 	gymVisits: [gymVisitSchema]
 });
 
+visitSchema.index({userId: 1, visitDate: 1}, { unique: true});
+
 exports.Visit = mongoose.model('Visit', visitSchema);
