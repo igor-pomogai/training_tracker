@@ -15,7 +15,8 @@ exports.post = function(req, res) {
 	Visit.findOne({userId: req.session.user, visitDate: todayDate}, function(err, loadedVisit) {
 		if (err) log.info(err);
 
-		var visit;
+		var visit,
+			responceVisitArray = [];
 
 		if (!loadedVisit) {
 			log.info('no visits for today! creating new one!');
@@ -34,6 +35,7 @@ exports.post = function(req, res) {
 			
 			visit.running = [];
 			visit.running.push({});
+			responceVisitArray.push('running');
 		} else {
 			req.session.visitedRun = req.visitedRun = res.locals.visitedRun = false;
 			visit.running = [];
@@ -45,6 +47,7 @@ exports.post = function(req, res) {
 			
 			visit.gymVisits = [];
 			visit.gymVisits.push({});
+			responceVisitArray.push('gym');
 		} else {
 			req.session.visitedGym = req.visitedGym = res.locals.visitedGym = false;
 			visit.gymVisits = [];
@@ -56,6 +59,7 @@ exports.post = function(req, res) {
 			
 			visit.poolVisits = [];
 			visit.poolVisits.push({});
+			responceVisitArray.push('pool');
 		} else {
 			req.session.visitedPool = req.visitedPool = res.locals.visitedPool = false;
 			visit.poolVisits = [];
@@ -66,7 +70,7 @@ exports.post = function(req, res) {
 
 			log.info('Visit saved!');
 
-			res.send({});
+			res.send(responceVisitArray);
 		});
 
 
