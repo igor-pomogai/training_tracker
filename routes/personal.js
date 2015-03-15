@@ -1,10 +1,8 @@
-var Visit = require('models/visit').Visit;
-var log = require('libs/log')(module);
+var Visit = require('models/visit').Visit,
+	News = require('models/news').News,
+	log = require('libs/log')(module);
 
 exports.get = function(req, res) {
-	//console.log(req.session);
-	//console.log(res.locals);
-
 	res.render('personal');
 };
 
@@ -29,40 +27,31 @@ exports.post = function(req, res) {
 			visit = loadedVisit;
 		}
 
+		req.session.visitedRun = req.visitedRun = res.locals.visitedRun = req.body.runVisit;
+		visit.running = [];
 		if (req.body.runVisit) {
 			log.info('Was running today');
-			req.session.visitedRun = req.visitedRun = res.locals.visitedRun = true;
 			
-			visit.running = [];
 			visit.running.push({});
-			responceVisitArray.push('running');
-		} else {
-			req.session.visitedRun = req.visitedRun = res.locals.visitedRun = false;
-			visit.running = [];
+			responceVisitArray.push('run_visit');
 		}
 
+		req.session.visitedGym = req.visitedGym = res.locals.visitedGym = req.body.gymVisit;
+		visit.gymVisits = [];
 		if (req.body.gymVisit) {
 			log.info('Visited gym');
-			req.session.visitedGym = req.visitedGym = res.locals.visitedGym = true;
 			
-			visit.gymVisits = [];
 			visit.gymVisits.push({});
-			responceVisitArray.push('gym');
-		} else {
-			req.session.visitedGym = req.visitedGym = res.locals.visitedGym = false;
-			visit.gymVisits = [];
+			responceVisitArray.push('gym_visit');
 		}
 
+		req.session.visitedPool = req.visitedPool = res.locals.visitedPool = req.body.poolVisit;
+		visit.poolVisits = [];
 		if (req.body.poolVisit) {
 			log.info('Visited pool');
-			req.session.visitedPool = req.visitedPool = res.locals.visitedPool = true;
 			
-			visit.poolVisits = [];
 			visit.poolVisits.push({});
-			responceVisitArray.push('pool');
-		} else {
-			req.session.visitedPool = req.visitedPool = res.locals.visitedPool = false;
-			visit.poolVisits = [];
+			responceVisitArray.push('pool_visit');
 		}
 
 		visit.save(function(err) {
@@ -73,6 +62,7 @@ exports.post = function(req, res) {
 			res.send(responceVisitArray);
 		});
 
+		
 
 	});
 };

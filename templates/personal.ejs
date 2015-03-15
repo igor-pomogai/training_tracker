@@ -1,6 +1,7 @@
 <% layout('/layout/main') -%>
 
 <script src="/vendor/bower_components/socket.io-client/socket.io.js"></script>
+<script src="/js/trainingweek.js"></script>
 
 <div class="container">
 	
@@ -10,7 +11,7 @@
 			
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h4><span class="glyphicon glyphicon-user"></span> User</h4>
+					<h4><span class="glyphicon glyphicon-user"></span> User info</h4>
 				</div>
 				<div class="panel-body">
 					<h4><b><%- user.username %></b></h4>
@@ -51,23 +52,20 @@
 						SUCCESS! 
 					</div>
 
-				</div>
-				
+				</div>		
 			</div>
 
 			<div class="panel panel-default">
-				<div class="panel-heading"><h4><span class="glyphicon glyphicon-th-list"></span> Users</h4></div>
-				<ul class="list-group">
-					<li class="list-group-item">Username</li>
-					<li class="list-group-item">Username</li>
-					<li class="list-group-item">Username</li>
-					<li class="list-group-item">Username</li>
-					<li class="list-group-item">Username</li>
+				<div class="panel-heading"><h4><span class="glyphicon glyphicon-th-list"></span> Friends</h4></div>
+				<ul id="friendsList" class="list-group">
+					
 				</ul>
 			</div>
+
 		</div>
 
 		<div class="col-md-6 col-sm-8 hidden-xs">
+
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h4><span class="glyphicon glyphicon-calendar"></span> Your hard week</h4>
@@ -93,49 +91,49 @@
 						<td><b>Sun</td>
 					</tr>
 					<tr>
-						<td>
+						<td id="monGym">
 							<% if (weekArray[0].gym) { %>
 							<span class="label label-success">
 							gym
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="tueGym">
 							<% if (weekArray[1].gym) { %>
 							<span class="label label-success">
 							gym
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="wedGym">
 							<% if (weekArray[2].gym) { %>
 							<span class="label label-success">
 							gym
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="thuGym">
 							<% if (weekArray[3].gym) { %>
 							<span class="label label-success">
 							gym
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="friGym">
 							<% if (weekArray[4].gym) { %>
 							<span class="label label-success">
 							gym
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="satGym">
 							<% if (weekArray[5].gym) { %>
 							<span class="label label-success">
 							gym
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="sunGym">
 							<% if (weekArray[6].gym) { %>
 							<span class="label label-success">
 							gym
@@ -144,49 +142,49 @@
 						</td>
 					</tr>
 					<tr>
-						<td>
+						<td id="monPool">
 							<% if (weekArray[0].pool) { %> 
 							<span class="label label-info">
 							pool 
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="tuePool">
 							<% if (weekArray[1].pool) { %> 
 							<span class="label label-info">
 							pool 
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="wedPool">
 							<% if (weekArray[2].pool) { %> 
 							<span class="label label-info">
 							pool 
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="thuPool">
 							<% if (weekArray[3].pool) { %> 
 							<span class="label label-info">
 							pool 
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="friPool">
 							<% if (weekArray[4].pool) { %> 
 							<span class="label label-info">
 							pool 
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="satPool">
 							<% if (weekArray[5].pool) { %> 
 							<span class="label label-info">
 							pool 
 							</span>
 							<% } %>
 						</td>
-						<td>
+						<td id="sunPool">
 							<% if (weekArray[6].pool) { %> 
 							<span class="label label-info">
 							pool 
@@ -195,49 +193,49 @@
 						</td>
 					</tr>
 					<tr>
-						<td>
+						<td id="monRun">
 							<% if (weekArray[0].running) { %> 
 							<span class="label label-warning">
 							running
 							</span>
 							 <% } %>
 						</td>
-						<td>
+						<td id="tueRun">
 							<% if (weekArray[1].running) { %> 
 							<span class="label label-warning">
 							running
 							</span>
 							 <% } %>
 						</td>
-						<td>
+						<td id="wedRun">
 							<% if (weekArray[2].running) { %> 
 							<span class="label label-warning">
 							running
 							</span>
 							 <% } %>
 						</td>
-						<td>
+						<td id="thuRun">
 							<% if (weekArray[3].running) { %> 
 							<span class="label label-warning">
 							running
 							</span>
 							 <% } %>
 						</td>
-						<td>
+						<td id="friRun">
 							<% if (weekArray[4].running) { %> 
 							<span class="label label-warning">
 							running
 							</span>
 							 <% } %>
 						</td>
-						<td>
+						<td id="satRun">
 							<% if (weekArray[5].running) { %> 
 							<span class="label label-warning">
 							running
 							</span>
 							 <% } %>
 						</td>
-						<td>
+						<td id="sunRun">
 							<% if (weekArray[6].running) { %> 
 							<span class="label label-warning">
 							running
@@ -246,11 +244,12 @@
 						</td>
 					</tr>
 				</table>
-
 			</div>
+
 		</div>
 		
 		<div class="col-md-3 col-sm-8 col-xs-8">
+		
 			<div class="panel panel-default">
 				<div class="panel-heading">
 					<h4 id="newsPanelHeading">News</h4>
@@ -258,6 +257,7 @@
 				<div class="panel-body">Here comes the lates news:</div>
 				<div class="list-group" id="newsList"></div>
 			</div>
+
 		</div>
 	
 	</div>
@@ -267,6 +267,31 @@
 
 <script>
 
+var date;
+
+$(document).ready(function() {
+	$.ajax({
+		url: "/latestNews",
+		method: "GET"
+	})
+	.done(function(loadedNews) {
+		loadedNews.reverse().forEach(function(news) {
+			printVisitNews(news);
+		});
+	});
+
+	$.ajax({
+		url: "/loadFriends",
+		method: "GET"
+	})
+	.done(function(loadedFriends) {
+		loadedFriends.forEach(function(friend) {
+			$('#friendsList').append('<li class="list-group-item">' + friend.username + '</li>');
+		});
+	});
+
+});
+
 $('#personalWidget form').on('submit', function() {
 	var form = $(this);
 
@@ -275,18 +300,22 @@ $('#personalWidget form').on('submit', function() {
 		method: "POST",
 		data: form.serialize(),
 		statusCode: {
-			200: function(visit) {
+			200: function(newsToShow) {
 				//window.location.href = "/personal";
-				
 				$('#successSaveAlert').show();
 			  	
 			  	setTimeout(function() {
 			  		$('#successSaveAlert').hide();
 				}, 2000);
-			  	visit.forEach(function(visit) {
-			  		sendVisitNews('<%- user.username %>', visit);
+
+			  	var weekDay = '<%= dayOfWeek %>';
+				redrawTrainingWeek(newsToShow, weekDay);
+
+			  	newsToShow.forEach(function(news) {
+
+			  		sendVisitNews(news);
+			  		
 			  	});
-				
 			},
 			403: function(jqXHR) {
 				var error = JSON.parse(jqXHR.responseText);
@@ -296,9 +325,13 @@ $('#personalWidget form').on('submit', function() {
 	return false;
 });
 
-var date = new Date();
+date = new Date();	
 
-$('#dateLabel').append('Today: ' + 'Wed, 25 Feb, 2015');
+$('#dateLabel').append('Today: ' 
+	+ ((date.getDate() < 10) ? '0' + date.getDate() : date.getDate()) + '.'
+	+ ((date.getMonth() < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '.' +
+	+ date.getFullYear()
+	);
   
 var newsList = $('#newsList');
 
@@ -307,8 +340,13 @@ var socket = io.connect('', {
 });
 
 socket
-	.on('message', function(message) {
-		printMessage(message);
+	.on('newVisit', function(newsObj) {
+		printVisitNews(newsObj);
+	})
+	.on('getNews', function(allNews) {
+		allNews.forEach(function(news) {
+			printVisitNews(news);
+		});
 	})
 	.on('connect', function() {
 		printStatus("соединение установлено");
@@ -318,11 +356,11 @@ socket
 		setTimeout(reconnect, 500);
 	});
 
-function sendVisitNews(username, visit) {
-	var text = username + ' visited ' + visit + ' today!';
-	
-	socket.emit('message', text, function() {
-		printMessage(text);
+function sendVisitNews(newsType) {
+	socket.emit('newVisit', newsType, function(res) {
+		if (!res.exists) {
+			printVisitNews(res.news);
+		}
 	});
 
 	return false;
@@ -341,11 +379,16 @@ function printStatus(status) {
 }
 
 function printStatusError(status) {
-	//$('<a href="#" class="list-group-item list-group-item-danger">').append($('<i>').text(status)).appendTo(newsList);
+	$('<a href="#" class="list-group-item list-group-item-danger">').append($('<i>').text(status)).appendTo(newsList);
 }
 
-function printMessage(text) {
-	//$('<li class="list-group-item list-group-item-info">').text(text).prependTo(ul);
+function printVisitNews(news) {
+	var nDate = new Date(news.newsDate);
+	var timestamp = 
+		(nDate.getDate() > 10 ? nDate.getDate() : '0' + nDate.getDate()) + '.'
+		+ (nDate.getMonth() > 10 ? (nDate.getMonth()+1) : '0' + (nDate.getMonth()+1)) + '.'
+		+ nDate.getFullYear();
+
 	newsList.prepend(
 		'<a href="#" class="list-group-item list-group-item-info">' 
 			+ '<h5 class="list-group-item-heading">'
@@ -353,15 +396,17 @@ function printMessage(text) {
 				+  'New visit'
 			+ '</h5>'
 			+ '<p class="list-group-item-text">'
-				+ text
+				+ news.newsBody
 			+ '</p>'
 			+ '<p class="list-group-item-text text-right">'
 				+ '<span class="glyphicon glyphicon-time"></span> '
-				+ '25.02.2015'
+				+ timestamp
 			+ '</p>'
 		+ '</a>'
 	);
+}
 
+function printOtherNews() {
 	newsList.prepend(
 		'<a href="#" class="list-group-item list-group-item-warning">' 
 			+ '<h5 class="list-group-item-heading">'

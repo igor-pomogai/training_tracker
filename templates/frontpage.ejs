@@ -3,4 +3,65 @@
 <div class="container">
 	<h1>Welcome to portal for pacany</h1>
 	<h3>Please login to proceed</h3>	
+	<hr>
+
+<div class="row">
+	<div class="col-sm-8 col-md-6">
+		<form class="form-horizontal" name="login-form">
+		<div class="form-group">
+			<label for="inputEmail3" class="col-sm-2 control-label">Username</label>
+			<div class="col-sm-10">
+				<input type="text" class="form-control" id="inputEmail3" placeholder="Username" name="username">
+			</div>
+		</div>
+	  <div class="form-group">
+	    <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+	    <div class="col-sm-10">
+	      <input type="password" class="form-control" id="inputPassword3" placeholder="Password" name="password">
+	    </div>
+	  </div>
+	  <div class="form-group">
+	    <div class="col-sm-offset-2 col-sm-10">
+	      <button type="submit" class="btn btn-primary">Sign in</button>
+	    </div>
+	  </div>
+	</form> 
+	
+	</div>
+	
 </div>
+	
+</div>
+
+<script>
+
+$(document.forms['login-form']).on('submit', function() {
+	var form = $(this);
+
+    //$('.error', form).html('');
+    //$(":submit", form).button("loading");
+
+    $.ajax({
+		url: "/login",
+		method: "POST",
+		data: form.serialize(),
+		complete: function() {
+			$(":submit", form).button("reset");
+		},
+		statusCode: {
+			200: function() {
+			  //form.html("Вы вошли в сайт").addClass('alert-success');
+			  $('#loginModal').modal('hide');
+
+			  window.location.href = "/personal";
+			},
+			403: function(jqXHR) {
+			  var error = JSON.parse(jqXHR.responseText);
+			  //$('.error', form).html(error.message);
+			}
+		}
+	});
+	return false;
+});
+
+</script>

@@ -34,12 +34,15 @@ app.use(cookieParser()); //req.cookies...
 //var MongoStore = require('connect-mongo')(express);
 //app.use(app.router);
 var MongoStore = require('connect-mongo')(session);
-app.use(session({
+var sessionMiddleware = session({
 	secret: config.get('session:secret'),
 	key: config.get('session:key'),
 	cookie: config.get('session:cookie'),
 	store: new MongoStore({mongoose_connection: mongoose.connection})	
-}));
+});
+app.use(sessionMiddleware);
+
+
 
 app.use(require('middleware/sendHttpError'));
 app.use(require('middleware/loadUser'));
@@ -71,4 +74,4 @@ var server = http.createServer(app).listen(config.get('port'), function() {
 	log.info('Express server listening on port ' + config.get('port'));
 });
 
-require('socket')(server);
+require('socket')(server, sessionMiddleware);

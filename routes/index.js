@@ -1,6 +1,7 @@
 var checkAuth = require('middleware/checkAuth');
 var loadVisit = require('middleware/loadVisit');
 var loadTrainingWeek = require('middleware/loadTrainingWeek');
+var loadNews = require('middleware/loadNews');
 
 module.exports = function(app) {
 	
@@ -15,6 +16,11 @@ module.exports = function(app) {
 	app.post('/login', require('./login').post);
 
 	app.post('/logout', require('./logout').post);
+
+	
+	app.get('/latestNews', require('./latestNews').get);
+
+	app.get('/loadFriends', require('./users').get);
 
 	//app.get('/chat', checkAuth, require('./chat').get);
 };
