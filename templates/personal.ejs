@@ -9,9 +9,9 @@
 	
 		<div class="col-md-3 col-sm-4 col-xs-4" id="personalWidget">
 			
-			<div class="panel panel-default">
+			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<h4><span class="glyphicon glyphicon-user"></span> User info</h4>
+					<h4><span class="glyphicon glyphicon-user"></span> Control panel</h4>
 				</div>
 				<div class="panel-body">
 					<h4><b><%- user.username %></b></h4>
@@ -56,6 +56,24 @@
 			</div>
 
 			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4><span class="glyphicon glyphicon-calendar"></span> Points</h4>
+				</div>
+				<ul class="list-group">
+					<li class="list-group-item list-group-item-success">
+						<span class="glyphicon glyphicon-star"></span>
+						 Igor
+						<span class="badge">10</span>
+					</li>
+					<li class="list-group-item">fedyk<span class="badge">5</span></li>
+					<li class="list-group-item">Rosta<span class="badge">3</span></li>
+					<li class="list-group-item">Sanya<span class="badge">0</span></li>
+					<li class="list-group-item">Dima<span class="badge">0</span></li>
+				</ul>
+				
+			</div>
+
+			<div class="panel panel-default">
 				<div class="panel-heading"><h4><span class="glyphicon glyphicon-th-list"></span> Friends</h4></div>
 				<ul id="friendsList" class="list-group">
 					
@@ -64,7 +82,7 @@
 
 		</div>
 
-		<div class="col-md-6 col-sm-8 hidden-xs">
+		<div class="col-lg-6 col-md-6 col-sm-8 hidden-xs">
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -246,9 +264,29 @@
 				</table>
 			</div>
 
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4><span class="glyphicon glyphicon-calendar"></span> Visits</h4>
+				</div>
+				<div class="panel-body">
+					March, 2015
+				</div>
+				<table id="visitsTable" class="table table-condensed table-bordered">
+					<tr>
+						<td></td>
+						<td><span class="label label-success">gym</span></td>
+						<td><span class="label label-info">pool</span></td>
+						<td><span class="label label-warning">running</span></td>
+					</tr>
+				</table>
+				<div class="panel-body">
+					<a href="#">load more</a>
+				</div>
+			</div>
+
 		</div>
 		
-		<div class="col-md-3 col-sm-8 col-xs-8">
+		<div class="col-md-offset-0 col-md-3 col-sm-offset-4 col-sm-8 col-xs-8">
 		
 			<div class="panel panel-default">
 				<div class="panel-heading">
@@ -290,6 +328,7 @@ $(document).ready(function() {
 		});
 	});
 
+	loadVisitsTable();
 });
 
 $('#personalWidget form').on('submit', function() {
@@ -312,10 +351,10 @@ $('#personalWidget form').on('submit', function() {
 				redrawTrainingWeek(newsToShow, weekDay);
 
 			  	newsToShow.forEach(function(news) {
-
 			  		sendVisitNews(news);
-			  		
 			  	});
+
+			  	loadVisitsTable();
 			},
 			403: function(jqXHR) {
 				var error = JSON.parse(jqXHR.responseText);
@@ -378,6 +417,41 @@ function printStatus(status) {
 	$('#newsPanelHeading').prepend('<span class="glyphicon glyphicon-link"></span> ');
 }
 
+function loadVisitsTable() {
+	$.ajax({
+		url: "/loadVisits",
+		method: "GET"
+	})
+	.done(function(loadedVisits) {
+		updateVisitsTable(loadedVisits);
+	});
+}
+
+function updateVisitsTable(visits) {
+	var table = $('#visitsTable');
+	var entry = '';
+	var header = '<tr>'
+					+ '<td></td>'
+					+ '<td><span class="label label-success">gym</span></td>'
+					+ '<td><span class="label label-info">pool</span></td>'
+					+ '<td><span class="label label-warning">running</span></td>'
+				+ '</tr>';
+
+	table.empty();
+	table.append(header);
+	
+	Object.keys(visits).forEach(function(visit) {
+		entry = '<tr>'
+					+ '<td>'+ visits[visit].username +'</td>'
+					+ '<td>' + visits[visit].gym + '</td>'
+					+ '<td>' + visits[visit].pool + '</td>'
+					+ '<td>' + visits[visit].run + '</td>'
+				+ '</tr>';
+
+		table.append(entry);
+	});
+}
+
 function printStatusError(status) {
 	$('<a href="#" class="list-group-item list-group-item-danger">').append($('<i>').text(status)).appendTo(newsList);
 }
@@ -399,8 +473,10 @@ function printVisitNews(news) {
 				+ news.newsBody
 			+ '</p>'
 			+ '<p class="list-group-item-text text-right">'
+				+ '<span class="label label-info">'
 				+ '<span class="glyphicon glyphicon-time"></span> '
 				+ timestamp
+				+ '</span>'
 			+ '</p>'
 		+ '</a>'
 	);

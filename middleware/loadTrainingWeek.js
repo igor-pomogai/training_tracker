@@ -119,6 +119,18 @@ module.exports = function(req, res, next) {
 				{gym: false, pool: false, running: false}
 			];
 
+			/*
+			var weekArray =[
+				{gym: true, pool: true, running: true},
+				{gym: true, pool: true, running: true},
+				{gym: true, pool: true, running: true},
+				{gym: true, pool: true, running: true},
+				{gym: true, pool: true, running: true},
+				{gym: true, pool: true, running: true},
+				{gym: true, pool: true, running: true}
+			];
+			*/
+			
 			visits.forEach(function(visit) {
 				var russianDayOfWeek = visit.visitDate.getDay() > 0 ? visit.visitDate.getDay() : 7;
 				weekArray[russianDayOfWeek - 1] = {

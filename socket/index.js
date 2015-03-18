@@ -34,13 +34,13 @@ module.exports = function(server, sessionMiddleware) {
 							log.info('user found: ' + user.username);
 							switch (newsType) {
 								case 'gym_visit': 
-									text = '<b>' + user.username + '</b> visited GYM';
+									text = '<b><span class="label label-primary">' + user.username + '</span></b> visited GYM';
 									break;
 								case 'pool_visit':
-									text = '<b>' + user.username + '</b> visited POOL';
+									text = '<b><span class="label label-primary">' + user.username + '</span></b> visited POOL';
 									break;
 								case 'run_visit':
-									text = '<b>' + user.username + '</b> was RUNNING';
+									text = '<b><span class="label label-primary">' + user.username + '</span></b> was RUNNING';
 									break;
 							};
 

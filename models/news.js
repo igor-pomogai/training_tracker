@@ -24,6 +24,10 @@ var newsSchema = new Schema({
 	newsType: {
 		type: String,
 		enum: newsTypes
+	},
+	username: {
+		type: String,
+		default: ''
 	}
 });
 

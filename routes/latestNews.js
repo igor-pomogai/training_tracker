@@ -8,10 +8,12 @@ exports.get = function(req, res) {
 		.limit(10)
 		.exec(function(err, loadedNews) {
 			var newsToSend = [];
+			var newsToSendObj = {};
 			loadedNews.forEach(function(news) {
 				newsToSend.push({
 					newsDate: news.newsDate,
-					newsBody: news.newsBody
+					newsBody: news.newsBody,
+					userId: news.userId
 				});
 			});
 			res.json(newsToSend);

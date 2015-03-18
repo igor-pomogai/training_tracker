@@ -22,5 +22,7 @@ module.exports = function(app) {
 
 	app.get('/loadFriends', require('./users').get);
 
+	app.get('/loadVisits', require('./visits').get);
+
 	//app.get('/chat', checkAuth, require('./chat').get);
 };
