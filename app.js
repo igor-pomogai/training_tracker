@@ -42,8 +42,6 @@ var sessionMiddleware = session({
 });
 app.use(sessionMiddleware);
 
-
-
 app.use(require('middleware/sendHttpError'));
 app.use(require('middleware/loadUser'));
 

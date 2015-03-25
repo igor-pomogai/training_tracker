@@ -1,9 +1,22 @@
 var crypto = require('crypto');
 var async = require('async');
 var util = require('util');
+var log = require('libs/log')(module);
 
 var mongoose = require('libs/mongoose'),
-	Schema = mongoose.Schema;
+	Schema = mongoose.Schema,
+	userGroupTypes = {
+		values: 'admin user guest'.split(' '),
+		message: 'No such user group'
+	};
+
+var userGroupSchema = new Schema({
+	name: {
+		type: String, 
+		enum: userGroupTypes,
+		default: 'user'	
+	} 
+});
 
 var schema = new Schema({
 	username: {
@@ -17,6 +30,17 @@ var schema = new Schema({
 	lastname: {
 		type: String
 	},
+	email: {
+		type: String
+	},
+	birthDate: {
+		type: Date
+	},
+	approved: {
+		type: Boolean,
+		default: false
+	},
+	userGroup: [userGroupSchema],
 	hashedPassword: {
 		type: String,
 		required: true
@@ -57,19 +81,51 @@ schema.statics.authorize = function(username, password, callback) {
 		function(user, callback) {
 			if (user) {
 				if (user.checkPassword(password)) {
-					callback(null, user);
+					//callback(null, user);
+					user.approved ? callback(null, user) : callback(new AuthError("Sorry. User is not approved by admin yet."));
 				} else {
-					callback(new AuthError("Wrong password"));
+					callback(new AuthError("Wrong password."));
 				}
 			} else {
-				var user = new User({username: username, password: password, firstname: username});
-				user.save(function(err) {
-					if (err) return callback(err);
-					callback(null, user);
-				});
+				callback(new AuthError("User doesn't exist."));
 			}
 		}
 	], callback);
+};
+
+schema.statics.register = function(data, callback) {
+	var User = this;
+
+	async.waterfall([
+		function(callback) {
+			log.info('Looking for user: ' + data.username);
+			User.findOne({username: data.username}, callback);
+		},
+		function(user, callback) {
+			if (user) {
+				log.info('User "' + user.username + '" exists.');
+				callback(new RegisterError("User with such username already exists."))
+			} else {
+				var user = new User({
+					username: data.username, 
+					password: data.password, 
+					firstname: data.firstname,
+					lastname: data.lastname,
+					email: data.email,
+					birthDate: new Date(data.birthYear, data.birthMonth, data.birthDate)
+				});
+
+				log.info('User registered: ' + user.username);
+
+				user.save(function(err) {
+					if (err) return callback(err);
+					
+					callback(null, "User registered succcessfully. Wait for approval to login.");
+				});	
+			}
+		}
+	], callback);
+
 };
 
 exports.User = mongoose.model('User', schema);
@@ -79,7 +135,6 @@ function AuthError(message) {
 	Error.apply(this, arguments);
 	Error.captureStackTrace(this, AuthError);
 
-	this.status = status;
 	this.message = message;
 }
 
@@ -88,3 +143,16 @@ util.inherits(AuthError, Error);
 AuthError.prototype.name = "AuthError";
 
 exports.AuthError = AuthError;
+
+function RegisterError(message) {
+	Error.apply(this, arguments);
+	Error.captureStackTrace(this, AuthError);
+
+	this.message = message;
+}
+
+util.inherits(RegisterError, Error);
+
+RegisterError.prototype.name = "RegisterError";
+
+exports.RegisterError = RegisterError;

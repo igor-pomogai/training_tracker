@@ -24,5 +24,9 @@ module.exports = function(app) {
 
 	app.get('/loadVisits', require('./visits').get);
 
-	//app.get('/chat', checkAuth, require('./chat').get);
+	app.get('/register', require('./register').get);
+	app.post('/register', require('./register').post);
+
+	app.get('/admin', require('./admin').get);
+	
 };

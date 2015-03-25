@@ -7,14 +7,14 @@
 	
 	<div class="row">
 	
-		<div class="col-md-3 col-sm-4 col-xs-4" id="personalWidget">
+		<div class="col-md-3 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-1" id="personalWidget">
 			
 			<div class="panel panel-primary">
 				<div class="panel-heading">
-					<h4><span class="glyphicon glyphicon-user"></span> Control panel</h4>
+					<span class="glyphicon glyphicon-user"></span> Control panel
 				</div>
 				<div class="panel-body">
-					<h4><b><%- user.username %></b></h4>
+					<h5><b><%- user.firstname %></b></h5>
 					<hr>
 					<h5 id="dateLabel"></h5>
 					<hr>
@@ -57,24 +57,14 @@
 
 			<div class="panel panel-default">
 				<div class="panel-heading">
-					<h4><span class="glyphicon glyphicon-calendar"></span> Points</h4>
+					<span class="glyphicon glyphicon-calendar"></span> Points
 				</div>
-				<ul class="list-group">
-					<li class="list-group-item list-group-item-success">
-						<span class="glyphicon glyphicon-star"></span>
-						 Igor
-						<span class="badge">10</span>
-					</li>
-					<li class="list-group-item">fedyk<span class="badge">5</span></li>
-					<li class="list-group-item">Rosta<span class="badge">3</span></li>
-					<li class="list-group-item">Sanya<span class="badge">0</span></li>
-					<li class="list-group-item">Dima<span class="badge">0</span></li>
+				<ul id="pointsList" class="list-group">
 				</ul>
-				
 			</div>
 
 			<div class="panel panel-default">
-				<div class="panel-heading"><h4><span class="glyphicon glyphicon-th-list"></span> Friends</h4></div>
+				<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> Friends</div>
 				<ul id="friendsList" class="list-group">
 					
 				</ul>
@@ -82,224 +72,240 @@
 
 		</div>
 
-		<div class="col-lg-6 col-md-6 col-sm-8 hidden-xs">
+		<div class="col-md-9 col-sm-8 col-sm-offset-0 col-xs-10 col-xs-offset-1">
 
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4><span class="glyphicon glyphicon-calendar"></span> Your hard week</h4>
+			<div class="row">
+				<div class="col-md-8">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<span class="glyphicon glyphicon-calendar"></span> Your hard week
+						</div>
+
+						<table class="table table-condensed table-bordered">
+							<colgroup>
+						        <col <% if (dayOfWeek === 'mon') { %> class="info" <% } %> ></col>
+						        <col <% if (dayOfWeek === 'tue') { %> class="info" <% } %> ></col>
+						        <col <% if (dayOfWeek === 'wed') { %> class="info" <% } %> ></col>
+						        <col <% if (dayOfWeek === 'thu') { %> class="info" <% } %> ></col>
+						        <col <% if (dayOfWeek === 'fri') { %> class="info" <% } %> ></col>
+						        <col <% if (dayOfWeek === 'sat') { %> class="info" <% } %> ></col>
+						        <col <% if (dayOfWeek === 'sun') { %> class="info" <% } %> ></col>
+						    </colgroup>
+							<tr>
+								<td><b>Mon</td>
+								<td><b>Tue</td>
+								<td><b>Wed</td>
+								<td><b>Thu</td>
+								<td><b>Fri</td>
+								<td><b>Sat</td>
+								<td><b>Sun</td>
+							</tr>
+							<tr>
+								<td id="monGym">
+									<% if (weekArray[0].gym) { %>
+									<span class="label label-success">
+									gym
+									</span>
+									<% } %>
+								</td>
+								<td id="tueGym">
+									<% if (weekArray[1].gym) { %>
+									<span class="label label-success">
+									gym
+									</span>
+									<% } %>
+								</td>
+								<td id="wedGym">
+									<% if (weekArray[2].gym) { %>
+									<span class="label label-success">
+									gym
+									</span>
+									<% } %>
+								</td>
+								<td id="thuGym">
+									<% if (weekArray[3].gym) { %>
+									<span class="label label-success">
+									gym
+									</span>
+									<% } %>
+								</td>
+								<td id="friGym">
+									<% if (weekArray[4].gym) { %>
+									<span class="label label-success">
+									gym
+									</span>
+									<% } %>
+								</td>
+								<td id="satGym">
+									<% if (weekArray[5].gym) { %>
+									<span class="label label-success">
+									gym
+									</span>
+									<% } %>
+								</td>
+								<td id="sunGym">
+									<% if (weekArray[6].gym) { %>
+									<span class="label label-success">
+									gym
+									</span>
+									<% } %>
+								</td>
+							</tr>
+							<tr>
+								<td id="monPool">
+									<% if (weekArray[0].pool) { %> 
+									<span class="label label-info">
+									pool 
+									</span>
+									<% } %>
+								</td>
+								<td id="tuePool">
+									<% if (weekArray[1].pool) { %> 
+									<span class="label label-info">
+									pool 
+									</span>
+									<% } %>
+								</td>
+								<td id="wedPool">
+									<% if (weekArray[2].pool) { %> 
+									<span class="label label-info">
+									pool 
+									</span>
+									<% } %>
+								</td>
+								<td id="thuPool">
+									<% if (weekArray[3].pool) { %> 
+									<span class="label label-info">
+									pool 
+									</span>
+									<% } %>
+								</td>
+								<td id="friPool">
+									<% if (weekArray[4].pool) { %> 
+									<span class="label label-info">
+									pool 
+									</span>
+									<% } %>
+								</td>
+								<td id="satPool">
+									<% if (weekArray[5].pool) { %> 
+									<span class="label label-info">
+									pool 
+									</span>
+									<% } %>
+								</td>
+								<td id="sunPool">
+									<% if (weekArray[6].pool) { %> 
+									<span class="label label-info">
+									pool 
+									</span>
+									<% } %>
+								</td>
+							</tr>
+							<tr>
+								<td id="monRun">
+									<% if (weekArray[0].running) { %> 
+									<span class="label label-warning">
+									run
+									</span>
+									 <% } %>
+								</td>
+								<td id="tueRun">
+									<% if (weekArray[1].running) { %> 
+									<span class="label label-warning">
+									run
+									</span>
+									 <% } %>
+								</td>
+								<td id="wedRun">
+									<% if (weekArray[2].running) { %> 
+									<span class="label label-warning">
+									run
+									</span>
+									 <% } %>
+								</td>
+								<td id="thuRun">
+									<% if (weekArray[3].running) { %> 
+									<span class="label label-warning">
+									run
+									</span>
+									 <% } %>
+								</td>
+								<td id="friRun">
+									<% if (weekArray[4].running) { %> 
+									<span class="label label-warning">
+									run
+									</span>
+									 <% } %>
+								</td>
+								<td id="satRun">
+									<% if (weekArray[5].running) { %> 
+									<span class="label label-warning">
+									run
+									</span>
+									 <% } %>
+								</td>
+								<td id="sunRun">
+									<% if (weekArray[6].running) { %> 
+									<span class="label label-warning">
+									run
+									</span>
+									 <% } %>
+								</td>
+							</tr>
+						</table>
+					</div>
+
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<span class="glyphicon glyphicon-calendar"></span> Visits
+						</div>
+						<div class="panel-body">
+							March, 2015
+						</div>
+						<table id="visitsTable" class="table table-condensed table-bordered">
+							<tr>
+								<td></td>
+								<td><span class="label label-success">gym</span></td>
+								<td><span class="label label-info">pool</span></td>
+								<td><span class="label label-warning">running</span></td>
+							</tr>
+						</table>
+						<div class="panel-body">
+							<a href="#">load more</a>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="panel panel-default">
+						<div id="newsPanelHeading" class="panel-heading">
+							News
+						</div>
+						<div class="panel-body">Here comes the lates news:</div>
+						<div class="list-group" id="newsList"></div>
+						<div class="panel-body">
+							<a href="#">load more</a>
+						</div>
+					</div>
 				</div>
 
-				<table class="table table-condensed table-bordered">
-					<colgroup>
-				        <col <% if (dayOfWeek === 'mon') { %> class="info" <% } %> ></col>
-				        <col <% if (dayOfWeek === 'tue') { %> class="info" <% } %> ></col>
-				        <col <% if (dayOfWeek === 'wed') { %> class="info" <% } %> ></col>
-				        <col <% if (dayOfWeek === 'thu') { %> class="info" <% } %> ></col>
-				        <col <% if (dayOfWeek === 'fri') { %> class="info" <% } %> ></col>
-				        <col <% if (dayOfWeek === 'sat') { %> class="info" <% } %> ></col>
-				        <col <% if (dayOfWeek === 'sun') { %> class="info" <% } %> ></col>
-				    </colgroup>
-					<tr>
-						<td><b>Mon</td>
-						<td><b>Tue</td>
-						<td><b>Wed</td>
-						<td><b>Thu</td>
-						<td><b>Fri</td>
-						<td><b>Sat</td>
-						<td><b>Sun</td>
-					</tr>
-					<tr>
-						<td id="monGym">
-							<% if (weekArray[0].gym) { %>
-							<span class="label label-success">
-							gym
-							</span>
-							<% } %>
-						</td>
-						<td id="tueGym">
-							<% if (weekArray[1].gym) { %>
-							<span class="label label-success">
-							gym
-							</span>
-							<% } %>
-						</td>
-						<td id="wedGym">
-							<% if (weekArray[2].gym) { %>
-							<span class="label label-success">
-							gym
-							</span>
-							<% } %>
-						</td>
-						<td id="thuGym">
-							<% if (weekArray[3].gym) { %>
-							<span class="label label-success">
-							gym
-							</span>
-							<% } %>
-						</td>
-						<td id="friGym">
-							<% if (weekArray[4].gym) { %>
-							<span class="label label-success">
-							gym
-							</span>
-							<% } %>
-						</td>
-						<td id="satGym">
-							<% if (weekArray[5].gym) { %>
-							<span class="label label-success">
-							gym
-							</span>
-							<% } %>
-						</td>
-						<td id="sunGym">
-							<% if (weekArray[6].gym) { %>
-							<span class="label label-success">
-							gym
-							</span>
-							<% } %>
-						</td>
-					</tr>
-					<tr>
-						<td id="monPool">
-							<% if (weekArray[0].pool) { %> 
-							<span class="label label-info">
-							pool 
-							</span>
-							<% } %>
-						</td>
-						<td id="tuePool">
-							<% if (weekArray[1].pool) { %> 
-							<span class="label label-info">
-							pool 
-							</span>
-							<% } %>
-						</td>
-						<td id="wedPool">
-							<% if (weekArray[2].pool) { %> 
-							<span class="label label-info">
-							pool 
-							</span>
-							<% } %>
-						</td>
-						<td id="thuPool">
-							<% if (weekArray[3].pool) { %> 
-							<span class="label label-info">
-							pool 
-							</span>
-							<% } %>
-						</td>
-						<td id="friPool">
-							<% if (weekArray[4].pool) { %> 
-							<span class="label label-info">
-							pool 
-							</span>
-							<% } %>
-						</td>
-						<td id="satPool">
-							<% if (weekArray[5].pool) { %> 
-							<span class="label label-info">
-							pool 
-							</span>
-							<% } %>
-						</td>
-						<td id="sunPool">
-							<% if (weekArray[6].pool) { %> 
-							<span class="label label-info">
-							pool 
-							</span>
-							<% } %>
-						</td>
-					</tr>
-					<tr>
-						<td id="monRun">
-							<% if (weekArray[0].running) { %> 
-							<span class="label label-warning">
-							running
-							</span>
-							 <% } %>
-						</td>
-						<td id="tueRun">
-							<% if (weekArray[1].running) { %> 
-							<span class="label label-warning">
-							running
-							</span>
-							 <% } %>
-						</td>
-						<td id="wedRun">
-							<% if (weekArray[2].running) { %> 
-							<span class="label label-warning">
-							running
-							</span>
-							 <% } %>
-						</td>
-						<td id="thuRun">
-							<% if (weekArray[3].running) { %> 
-							<span class="label label-warning">
-							running
-							</span>
-							 <% } %>
-						</td>
-						<td id="friRun">
-							<% if (weekArray[4].running) { %> 
-							<span class="label label-warning">
-							running
-							</span>
-							 <% } %>
-						</td>
-						<td id="satRun">
-							<% if (weekArray[5].running) { %> 
-							<span class="label label-warning">
-							running
-							</span>
-							 <% } %>
-						</td>
-						<td id="sunRun">
-							<% if (weekArray[6].running) { %> 
-							<span class="label label-warning">
-							running
-							</span>
-							 <% } %>
-						</td>
-					</tr>
-				</table>
 			</div>
+			
 
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4><span class="glyphicon glyphicon-calendar"></span> Visits</h4>
-				</div>
-				<div class="panel-body">
-					March, 2015
-				</div>
-				<table id="visitsTable" class="table table-condensed table-bordered">
-					<tr>
-						<td></td>
-						<td><span class="label label-success">gym</span></td>
-						<td><span class="label label-info">pool</span></td>
-						<td><span class="label label-warning">running</span></td>
-					</tr>
-				</table>
-				<div class="panel-body">
-					<a href="#">load more</a>
-				</div>
-			</div>
+			
 
 		</div>
 		
 		<div class="col-md-offset-0 col-md-3 col-sm-offset-4 col-sm-8 col-xs-8">
 		
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 id="newsPanelHeading">News</h4>
-				</div>
-				<div class="panel-body">Here comes the lates news:</div>
-				<div class="list-group" id="newsList"></div>
-			</div>
+			
 
 		</div>
 	
 	</div>
 
+	<hr>
+	<p class="text-center">made by <b>dayaram</b></p>
 </div>
 
 
@@ -324,7 +330,7 @@ $(document).ready(function() {
 	})
 	.done(function(loadedFriends) {
 		loadedFriends.forEach(function(friend) {
-			$('#friendsList').append('<li class="list-group-item">' + friend.username + '</li>');
+			$('#friendsList').append('<li class="list-group-item">' + friend.username + '<span class="badge">info</span></li>');
 		});
 	});
 
@@ -418,12 +424,17 @@ function printStatus(status) {
 }
 
 function loadVisitsTable() {
+	var date = new Date();
 	$.ajax({
 		url: "/loadVisits",
-		method: "GET"
+		method: "GET",
+		data: {
+			date: date
+		}
 	})
 	.done(function(loadedVisits) {
 		updateVisitsTable(loadedVisits);
+		updatePointsTable(loadedVisits);
 	});
 }
 
@@ -450,6 +461,49 @@ function updateVisitsTable(visits) {
 
 		table.append(entry);
 	});
+}
+
+function updatePointsTable(visits) {
+	var ptsList, winElem, normElem, ptsArray, points, gymCoeff, poolCoeff, runCoeff;
+	
+	ptsList = $('#pointsList');
+	ptsList.empty();
+
+	winElem = '<li class="list-group-item list-group-item-success">'
+						+ '<span class="glyphicon glyphicon-star"></span>'
+						+ ' %user%'
+						+ '<span class="badge">%points%</span>'
+					+ '</li>';
+	normElem = '<li class="list-group-item">%user%<span class="badge">%points%</span></li>';
+
+	gymCoeff = 1.0;
+	runCoeff = poolCoeff = 0.5;
+
+	ptsArray = [];
+
+	Object.keys(visits).forEach(function(visit) {
+		points = (visits[visit].gym * gymCoeff)
+				+ (visits[visit].pool * poolCoeff) 
+				+ (visits[visit].run * runCoeff);
+		ptsArray.push({
+			user: visits[visit].username,
+			pts: points
+		});
+	});
+
+	ptsArray.sort(function(a, b) {
+		if (a.pts > b.pts) return -1;
+		else return 1;
+		return 0;
+	});
+
+	ptsList.append(winElem.replace('%user%', ptsArray[0].user).replace('%points%', ptsArray[0].pts));
+
+	ptsArray.forEach(function(entry, index) {
+		if (index > 0) {
+			ptsList.append(normElem.replace('%user%', entry.user).replace('%points%', entry.pts));
+		}
+	});	
 }
 
 function printStatusError(status) {

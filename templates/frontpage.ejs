@@ -1,67 +1,120 @@
 <% layout('/layout/main') -%>
 
 <div class="container">
-	<h1>Welcome to portal for pacany</h1>
-	<h3>Please login to proceed</h3>	
-	<hr>
-
-<div class="row">
-	<div class="col-sm-8 col-md-6">
-		<form class="form-horizontal" name="login-form">
-		<div class="form-group">
-			<label for="inputEmail3" class="col-sm-2 control-label">Username</label>
-			<div class="col-sm-10">
-				<input type="text" class="form-control" id="inputEmail3" placeholder="Username" name="username">
-			</div>
+	<div class="row">
+		<div class="col-sm-12">
+			<h1 class="text-center">TrainingTracker</h1>
+			<h3 class="text-center">Please login to proceed</h3>	
+			<hr>
 		</div>
-	  <div class="form-group">
-	    <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
-	    <div class="col-sm-10">
-	      <input type="password" class="form-control" id="inputPassword3" placeholder="Password" name="password">
-	    </div>
-	  </div>
-	  <div class="form-group">
-	    <div class="col-sm-offset-2 col-sm-10">
-	      <button type="submit" class="btn btn-primary">Sign in</button>
-	    </div>
-	  </div>
-	</form> 
-	
 	</div>
 	
-</div>
-	
+	<div class="row">
+
+		<div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6">
+
+				<form class="form-horizontal" name="login-form">
+			
+					<div class="form-group">
+						<div class="col-sm-12">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+								<input id="usernameInput" type="text" class="form-control" placeholder="Username" name="username">
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-12">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>
+							  	<input id="passwordInput" type="password" class="form-control" id="inputPassword3" placeholder="Password" name="password">
+							</div>	
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-12">
+							<button type="submit" class="btn btn-primary btn-block">Log In</button>	
+						</div>
+					</div>
+
+				</form> 
+
+				<!--<p class="text-center">or</p>-->
+				<hr>
+
+				<button id="signUpBtn" class="btn btn-warning btn-block">Register</button>
+
+				<div id="alertsContainer">
+					
+				</div>
+				
+		</div>
+			
+	</div>
+
+	<hr>
+	<p class="text-center">made by <b>dayaram</b></p>
+
 </div>
 
 <script>
 
+$('#signUpBtn').on('click', function() {
+	window.location.href = '/register';
+});
+
+
+
 $(document.forms['login-form']).on('submit', function() {
 	var form = $(this);
+	var alertContainer = $('#alertsContainer');
 
-    //$('.error', form).html('');
-    //$(":submit", form).button("loading");
+	alertContainer.empty();
 
-    $.ajax({
-		url: "/login",
-		method: "POST",
-		data: form.serialize(),
-		complete: function() {
-			$(":submit", form).button("reset");
-		},
-		statusCode: {
-			200: function() {
-			  //form.html("Вы вошли в сайт").addClass('alert-success');
-			  $('#loginModal').modal('hide');
 
-			  window.location.href = "/personal";
+    if( !$('#passwordInput').val() || !$('#usernameInput').val() ) {
+        $('form').addClass('has-error');
+        generateLoginAlert({
+        	message: 'Enter username and password.'
+        });
+    } else {
+    	$.ajax({
+			url: "/login",
+			method: "POST",
+			data: form.serialize(),
+			complete: function() {
+				$(":submit", form).button("reset");
 			},
-			403: function(jqXHR) {
-			  var error = JSON.parse(jqXHR.responseText);
-			  //$('.error', form).html(error.message);
+			statusCode: {
+				200: function() {
+				  //form.html("Вы вошли в сайт").addClass('alert-success');
+				  //$('#loginModal').modal('hide');
+
+				  window.location.href = "/personal";
+				},
+				403: function(jqXHR) {
+					var error = JSON.parse(jqXHR.responseText);
+					generateLoginAlert(error);
+				}
 			}
-		}
-	});
-	return false;
+		});	
+    }
+    return false;
+
 });
+
+function generateLoginAlert(error) {
+	var alertContainer = $('#alertsContainer');
+	var loginAlert = '<div class="alert alert-danger alert-dismissible" role="alert">'
+						+ '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+							+ '<span>&times;</span>'
+						+ '</button>'
+						+ '%error%'
+					+ '</div>';
+
+	alertContainer.prepend(loginAlert.replace('%error%', error.message));
+}
 
 </script>

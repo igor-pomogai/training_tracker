@@ -8,7 +8,7 @@ exports.get = function(req, res) {
 	res.render('login');
 };
 
-exports.post = function(req, res) {
+exports.post = function(req, res, next) {
 	var username = req.body.username;
 	var password = req.body.password;
 
@@ -20,6 +20,7 @@ exports.post = function(req, res) {
 				return next(err);
 			}
 		}
+		
 		log.info('User id: ' + user._id);
 		log.info('User object: ' + user);
 		req.session.user = user._id;

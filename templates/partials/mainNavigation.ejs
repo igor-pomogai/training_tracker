@@ -13,9 +13,25 @@
 			<ul class="nav navbar-nav">
 				<% if (user) { %> 
 				
-				<li class="active"><a href="">Trainings</a></li>
+				<li class="active"><a href="/personal">Trainings</a></li>
 				
 				<% } %>
+
+				<% 
+				if (user) {
+					if (user.userGroup) {
+						for (var i=0; i<user.userGroup.length; i++) {
+							if (user.userGroup[i].name == 'admin') {
+				%>
+								<li><a href="/admin">Admin panel</a></li>			
+				<%
+								break;
+							}
+						}
+					}
+				}
+				%>
+
 			</ul>
 
 			<% if (user) { %>

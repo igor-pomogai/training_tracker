@@ -1,0 +1,355 @@
+<% layout('/layout/main') -%>
+
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12">
+			<h1 class="text-center">TrainingTracker</h1>
+			<h3 class="text-center">Fill in the fields</h3>	
+			<hr>
+		</div>
+	</div>
+	
+	<div class="row">
+	
+		<div class="col-xs-offset-2 col-xs-8 col-sm-offset-3 col-sm-6">
+			
+				<form id="registerForm" class="form-horizontal" name="registerForm">
+
+					<div class="form-group">
+						
+						<div class="col-sm-6">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+								<input type="text" class="form-control" placeholder="Firstname" name="firstname">
+							</div>
+						</div>
+					
+						<div class="col-sm-6">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+								<input type="text" class="form-control" placeholder="Lastname" name="lastname">
+							</div>
+						</div>
+
+					</div>
+					
+
+					<div class="form-group">
+						<div class="col-sm-12">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></div>
+								<input type="email" class="form-control" placeholder="Email" name="email">
+							</div>
+						</div>	
+					</div>
+					
+					<div class="form-group">
+						<div class="col-sm-12">
+							<div class="input-group">
+							<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+							<input type="text" class="form-control" placeholder="Username" name="username">
+						</div>
+						</div>
+					</div>
+					
+					<div class="form-group">
+						<div class="col-sm-6">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>
+							  	<input type="password" class="form-control" placeholder="Password" name="password">
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>
+							  	<input type="password" class="form-control" placeholder="Confirm password" name="passwordConfirm">
+							</div>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<div class="col-sm-12">
+							<p><b>Birth date</b></p>
+						</div>
+						<div class="col-sm-4">
+							<select class="form-control" name="birthMonth">
+								<option value="0">Jan</option>
+								<option value="1">Feb</option>
+								<option value="2">Mar</option>
+								<option value="3">Apr</option>
+								<option value="4">May</option>
+								<option value="5">Jun</option>
+								<option value="6">Jul</option>
+								<option value="7">Aug</option>
+								<option value="8">Sep</option>
+								<option value="9">Oct</option>
+								<option value="10">Nov</option>
+								<option value="11">Dec</option>
+							</select>
+						</div>
+						<div class="col-sm-3">
+							<select class="form-control" name="birthDate">
+								<option value="1">1</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+								<option>6</option>
+								<option>7</option>
+								<option>8</option>
+								<option>9</option>
+								<option>10</option>
+								<option>11</option>
+								<option>12</option>
+								<option>13</option>
+								<option>14</option>
+								<option>15</option>
+								<option>16</option>
+								<option>17</option>
+								<option>18</option>
+								<option>19</option>
+								<option>20</option>
+								<option>21</option>
+								<option>22</option>
+								<option>23</option>
+								<option>24</option>
+								<option>25</option>
+								<option>26</option>
+								<option>27</option>
+								<option>28</option>
+								<option>29</option>
+								<option>30</option>
+								<option>31</option>
+							</select>
+						</div>
+						<div class="col-sm-5">
+							<select class="form-control" name="birthYear">
+								<option value="1">1990</option>
+								<option>1991</option>
+								<option>1992</option>
+								<option>1993</option>
+								<option>1994</option>
+								<option>1995</option>
+								<option>1996</option>
+								<option>1997</option>
+								<option>1998</option>
+								<option>1999</option>
+								<option>2000</option>
+								<option>2001</option>
+								<option>2002</option>
+								<option>2003</option>
+								<option>2004</option>
+								<option>2005</option>
+								<option>2006</option>
+								<option>2007</option>
+								<option>2008</option>
+								<option>2009</option>
+								<option>2010</option>
+								<option>2011</option>
+								<option>2012</option>
+								<option>2013</option>
+								<option>2014</option>
+								<option>2015</option>
+							</select>
+						</div>
+					</div>
+					
+	
+					<button type="submit" class="btn btn-primary btn-block">Send request</button>
+
+
+
+				</form> 
+
+				<div id="alertsContainer" hidden>
+					
+				</div>
+				
+				<hr>
+				<!--<button id="fromRegToLoginBtn" class="btn btn-success btn-block">Login</button>-->
+
+				<p class="text-center"><a href="/">Login page</a></p>
+
+		</div>
+			
+
+	</div>
+
+	<hr>
+	<p class="text-center">made by <b>dayaram</b></p>
+
+	<script>
+
+		$(document).ready(function() {
+			var alertsContainer;
+			var registerForm = $('#registerForm');
+			
+			registerForm.validate({
+				rules: {
+					firstname: {
+						required: true
+					},
+					email: {
+						required: true,
+						email: true
+					},
+					username: {
+						required: true,
+						rangelength: [3, 20]
+					},
+					password: {
+						required: true,
+						minlength: 6
+					},
+					passwordConfirm: {
+						required: true,
+						minlength: 6
+					},
+					birthMonth: {
+						required: true
+					},
+					birthDate: {
+						required: true
+					},
+					birthYear: {
+						required: true
+					}
+				},
+				messages: {
+					firstname: {
+						required: "Firstname is required."
+					},
+					email: {
+						required: "Email is required.",
+						email: "Enter valid email address."
+					},
+					username: {
+						required: "Username is required.",
+						rangelength: "Username must be between 3 and 20 characters."
+					},
+					password: {
+						required: "Enter password.",
+						minlength: "Password must be at least 6 characters length."
+					},
+					passwordConfirm: {
+						required: "Please confirm password.",
+						minlength: "Password must be at least 6 characters length."
+					}
+				},
+				onfocusout: false,
+				onkeyup: false,
+				focusCleanup: true,
+				debug: false,
+				showErrors: function(errorMap, 	errorList) {
+					var customAlert = '<div class="alert alert-danger alert-dismissible" role="alert">'
+										+ '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+											+ '<span>&times;</span>'
+										+ '</button>'
+										+ '%error%'
+									+ '</div>';
+
+					$('#registerForm .input-group').each(function(i) {
+						$(this).removeClass('has-error');
+					});
+
+					alertsContainer = $('#alertsContainer');	
+					alertsContainer.empty();
+
+					var errorsList = '';
+					var errorString = '';
+
+					errorList.forEach(function(element) {
+						$(element.element).parent().addClass('has-error');
+						errorsList += '<li>' + element.message;
+					});
+					errorString = customAlert.replace('%error%', '<ul>' + errorsList + '</ul>');
+					alertsContainer.prepend(errorString);
+					alertsContainer.show();
+				},
+				submitHandler: function(form) {
+					var ajaxdata = {
+						url: "/register",
+						method: "POST",
+						data: registerForm.serialize(),
+						statusCode: {
+							200: function(data) {
+								var customAlert = '<div class="alert alert-success alert-dismissible" role="alert">'
+										+ '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+											+ '<span>&times;</span>'
+										+ '</button>'
+										+ '%error%'
+									+ '</div>';
+
+								console.log(data);
+								registerForm[0].reset();
+								alertsContainer.empty();
+								
+								alertsContainer.append(customAlert.replace('%error%', data));
+
+							  	//window.location.href = "/personal";
+							},
+							403: function(jqXHR) {
+								var error = JSON.parse(jqXHR.responseText);
+								console.log(error);
+							}
+						}
+					};
+
+					$.ajax(ajaxdata);
+
+					return false;
+				}
+			});
+
+			$('input[name="passwordConfirm"]').blur(function() {
+				var passwordInput = $('input[name="password"]');
+				console.log($(this).val() == passwordInput.val());
+			});
+
+			$('#fromRegToLoginBtn').on('click', function() {
+				window.location.href = '/';
+			});
+
+		});
+			
+
+/*
+		$(document.forms['registerForm']).on('submit', function() {
+				
+			
+			return false;
+
+
+			var form = $(this);
+			//var alertContainer = $('#alertsContainer');
+
+			//alertContainer.empty();
+
+
+	    	$.ajax({
+				url: "/register",
+				method: "POST",
+				data: form.serialize(),
+				complete: function() {
+					$(":submit", form).button("reset");
+				},
+				statusCode: {
+					200: function() {
+					  //form.html("Вы вошли в сайт").addClass('alert-success');
+					  //$('#loginModal').modal('hide');
+
+					  window.location.href = "/personal";
+					},
+					403: function(jqXHR) {
+						var error = JSON.parse(jqXHR.responseText);
+						generateLoginAlert(error);
+					}
+				}
+			});	
+		    return false;
+
+		});
+*/
+	</script>
+
+</div>

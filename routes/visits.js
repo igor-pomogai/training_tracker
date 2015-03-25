@@ -16,10 +16,17 @@ exports.get = function(req, res) {
 			};
 		});
 
+		var curDate = new Date(req.query.date);
+		var startOfMonth = new Date(curDate.getFullYear(), curDate.getMonth(), 1);
+
+		console.log(startOfMonth);
+		console.log(curDate);
+
 		Visit
 			.find({})
 			.where('userId')
 			.in(Object.keys(loadedVisits))
+			.where('visitDate').gte(startOfMonth).lte(curDate)
 			.exec(function(err, visits) {
 				if (err) console.log(err);
 

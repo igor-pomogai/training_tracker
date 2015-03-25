@@ -1,7 +1,7 @@
 var redrawTrainingWeek = function(newsToShow, weekDay) {
 	var gymLabel = '<span class="label label-success">gym</span>';
 	var poolLabel = '<span class="label label-info">pool</span>';
-	var runningLabel = '<span class="label label-warning">running</span>';
+	var runningLabel = '<span class="label label-warning">run</span>';
 
 	var rightDay;
 
