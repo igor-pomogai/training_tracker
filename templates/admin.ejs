@@ -3,48 +3,39 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12">
-			<h1 class="text-center">TrainingTracker</h1>
-			<h3 class="text-center">Admin panel</h3>	
-			<hr>
+			<ul class="nav nav-pills">
+			  <li role="presentation" class="active"><a href="#">Users</a></li>
+			  <li role="presentation"><a href="#">Bug Reports</a></li>
+			  <li role="presentation"><a href="#">Other</a></li>
+			</ul>
 		</div>
 	</div>
+
+	<hr>
 	
 	<div class="row">
 		
 		<div class="col-sm-3">
-			<div class="list-group">
-				<a href="" class="list-group-item active">Firstname Lastname</a>
-				<a href="" class="list-group-item">Firstname Lastname</a>
-				<a href="" class="list-group-item">Firstname Lastname</a>
-				<a href="" class="list-group-item">Firstname Lastname</a>
-				<a href="" class="list-group-item">Firstname Lastname</a>
-				<a href="" class="list-group-item">Firstname Lastname</a>
-				<a href="" class="list-group-item">Firstname Lastname</a>
-				<a href="" class="list-group-item">Firstname Lastname</a>
-				<a href="" class="list-group-item">Firstname Lastname</a>
-				<a href="" class="list-group-item">Firstname Lastname</a>
+			
+			<p><b>New users</b></p>
+			<div class="list-group new-users">
+				<p> - no new users</p>
 			</div>
+			
+			<p><b>Users</b></p>
+			<div class="list-group existing-users">
+			</div>
+
 		</div>
 
 
 		<div class="col-sm-9">
+			<p><b>User details</b></p>
 			<div class="well">
+				<div id="userInfo">
+					<p>Select user</p>
 
-				<h4>Igor Pomogai</h4>
-				<button class="btn btn-primary btn-xs">Edit</button>
-				<button class="btn btn-danger btn-xs">Remove</button>
-
-				<hr>
-
-				<p>username: dayaram</p>
-				<p>email: pomogai92@gmail.com</p>
-				<p>birthdate: 16.03.1992</p>
-
-				<hr>
-
-				<p>weight: 84 kg</p>
-				<p>push: 100 kg</p>
-				<p>arm: 32 sm</p>	
+				</div>
 				
 			</div>
 			
@@ -57,10 +48,163 @@
 	<p class="text-center">made by <b>dayaram</b></p>
 
 	<script>
+		var usersList = [];
+		var needApprUsersList = [];
+		var activeUser;
 
+		
 		$(document).ready(function() {
 
-		}
+			getAdminData();
+	
+			function getAdminData() {
+				$.ajax({
+					url: '/adminGetData',
+					method: 'GET'
+				})
+				.done(function(loadedUsers) {
+					needApprUsersList = [];
+					usersList = [];
+
+					loadedUsers.forEach(function(user) {
+						if (user.approved) {
+							usersList.push(user);
+						} else {
+							needApprUsersList.push(user);
+						}
+					});
+					displayUsers();
+				});
+			}
+
+			function displayUsers() {
+				var apprUsr, needApprUsr, apprCont, needApprCont;
+				apprUsr = '<a href="" class="list-group-item">%username%</a>';
+				needApprUsr = '<a href="" class="list-group-item">'
+						+ '<p class="list-group-item-heading">%username%</p>'
+						+ '<div class="list-group-item-text">'
+							+ '<button class="btn btn-success btn-sm approve-btn">Approve</button> '
+							+ '<button class="btn btn-danger btn-sm" disabled="disabled">Decline</button>'
+						+ '</div>'
+					+ '</a>';
+				
+				needApprCont = $('.new-users');
+				apprCont = $('.existing-users');
+
+				
+				apprCont.empty();
+				usersList.forEach(function(user) {
+					apprCont.append(apprUsr.replace('%username%', user.firstname + ' ' + user.lastname));
+				});
+
+				if (needApprUsersList.length) {
+					needApprCont.empty();	
+				}
+				needApprUsersList.forEach(function(user) {
+					needApprCont.append(needApprUsr.replace('%username%', user.firstname + ' ' + user.lastname));
+				});	
+
+				$(".new-users .list-group-item").click(function() {
+					var index = selectElement(this);
+					
+					displayUserDetails(needApprUsersList[index]);
+
+					return false;
+				});
+
+				$(".existing-users .list-group-item").click(function() {
+					var index = selectElement(this);
+
+					displayUserDetails(usersList[index]);
+
+					return false;
+				});
+
+				$(".approve-btn").click(function() {
+					var userLink = this.closest('a'),
+						index = $(userLink).index();
+
+					approveUser(index);
+
+					return false;
+				});
+			}
+
+			function selectElement(elem) {
+				$('.new-users>a.active').removeClass("active");
+				$('.existing-users>a.active').removeClass("active");
+
+				$(elem).addClass('active');
+
+				return $(elem).index();
+			}
+
+			function displayUserDetails(usr) {
+				activeUser = usr._id;
+
+				var userDetails = ''
+					+ '<h4>' + usr.firstname + ' ' + usr.lastname + '</h4>'
+					+ '<button class="btn btn-primary btn-xs">Edit</button> '
+					+ '<button class="btn btn-danger btn-xs remove-usr-btn">Remove</button>'
+					+ '<hr>'
+					
+					+ '<p><b>account info</b></p>'
+
+					+ '<p>username: ' + usr.username + '</p>'
+					+ '<p>email: ' + usr.email + '</p>'
+					+ '<p>birthdate: ' + usr.birthDate + '</p>'
+
+					+ '<br>'
+					+ '<p><b>body info</b></p>'
+
+					+ '<p>weight: in development</p>'
+					+ '<p>push: in development</p>'
+					+ '<p>arm: in development</p>';
+
+
+				$('#userInfo').empty().append(userDetails);
+				
+				$('.remove-usr-btn').click(function() {
+					$.ajax({
+						url: '/removeUser',
+						method: 'POST',
+						data: {
+							usrId: activeUser
+						}
+					})
+					.done(function(result) {
+						if (result) {
+							console.log('user removed');
+							window.location.reload(true);
+						}
+					});
+				});
+
+			}
+
+			function approveUser(index, element) {
+				$.ajax({
+					url: '/userApprove',
+					method: 'POST',
+					data: {
+						usrId: needApprUsersList[index]._id
+					}
+				})
+				.done(function(result) {
+					if (result) {
+						console.log(true);	
+						
+						window.location.reload(true);
+
+					} else  {
+						console.log(false);
+					}
+				});
+			}
+
+		});
+
+
 
 	</script>
 
