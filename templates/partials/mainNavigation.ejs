@@ -10,11 +10,11 @@
 			<!--<a class="navbar-brand" href="">TrainingTrack</a>-->
 		</div>
 		<div class="collapse navbar-collapse" id="navigationBar">
-			<ul class="nav navbar-nav">
+			<ul class="nav navbar-nav top-navbar">
 				
 				<% if (user) { %> 
 				
-				<li class="active"><a href="/personal">Trainings</a></li>
+				<li><a href="/personal">Trainings</a></li>
 				
 				<% } %>
 
@@ -66,14 +66,22 @@
 
 <script>
 
-
-$("#logoutBtn").click(function() {
-	$.ajax({
-	    url: "/logout",
-	    method: "POST"
-	}).success(function() {
-		window.location.href = "/";
+$(document).ready(function() {
+	$("#logoutBtn").click(function() {
+		$.ajax({
+		    url: "/logout",
+		    method: "POST"
+		}).success(function() {
+			window.location.href = "/";
+		});
 	});
+
+	$('.top-navbar li').click(function() {
+		$('.top-navbar li.active').removeClass("active");
+		$(this).addClass('active');
+	});
+
 });
+
 
 </script>

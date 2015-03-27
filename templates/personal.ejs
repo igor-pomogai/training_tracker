@@ -6,15 +6,15 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-12">
-			<ul class="nav nav-pills">
-				<li role="presentation" class="active"><a href="#">Dashboard</a></li>
-				<li role="presentation"><a href="#">Profile</a></li>
-				<li role="presentation"><a href="#">Messages</a></li>
+			<ul class="nav nav-pills personal-page-nav">
+				<li role="presentation" class="active" id="personalDashBtn"><a href="">Dashboard</a></li>
+				<li role="presentation" id="personalProfileBtn"><a href="">Profile</a></li>
 			</ul>
 		</div>
 	</div>
 	<hr>
-	<div class="row">
+	
+	<div class="row" id="dashboardPage" >
 	
 		<div class="col-md-3 col-sm-4 col-sm-offset-0 col-xs-10 col-xs-offset-1" id="personalWidget">
 			
@@ -23,7 +23,7 @@
 					<span class="glyphicon glyphicon-user"></span> Control panel
 				</div>
 				<div class="panel-body">
-					<h5><b><%- user.firstname %></b></h5>
+					<h5><b><%- user.firstname + ' ' + user.lastname %></b></h5>
 					<hr>
 					<h5 id="dateLabel"></h5>
 					<hr>
@@ -313,6 +313,30 @@
 	
 	</div>
 
+	<div class="row" id="profilePage" >
+		<div class="col-sm-12">
+			<p><b>User details</b></p>
+			<div class="well">
+				<h4><%- user.firstname + ' ' + user.lastname %></h4>
+				<button class="btn btn-primary btn-xs">Edit</button>
+				<hr>
+				
+				<p><b>account info</b></p>
+
+				<p><%- 'username: ' + user.username %></p>
+				<p><%- 'email: ' + user.email %></p>
+				<p><%- 'birthdate: ' + user.birthDate %></p>
+
+				<br>
+				<p><b>body info</b></p>
+
+				<p><%- 'weight: in development' %></p>
+				<p><%- 'push: in development' %></p>
+				<p><%- 'arm: in development' %></p>
+			</div>
+			
+		</div>
+	</div>
 	<hr>
 	<p class="text-center">made by <b>dayaram</b></p>
 </div>
@@ -344,6 +368,26 @@ $(document).ready(function() {
 	});
 
 	loadVisitsTable();
+});
+
+$('.personal-page-nav li').click(function() {
+	$('.personal-page-nav li.active').removeClass("active");
+	$(this).addClass('active');
+
+	console.log($(this));
+
+	switch ($(this).attr('id')) {
+		case "personalDashBtn": 
+			$('#dashboardPage').show();
+			$('#profilePage').hide();
+			break;
+		case "personalProfileBtn":
+			$('#dashboardPage').hide();
+			$('#profilePage').show();
+			break;
+	}
+
+	return false;
 });
 
 $('#personalWidget form').on('submit', function() {
@@ -520,20 +564,20 @@ function printStatusError(status) {
 }
 
 function printVisitNews(news) {
-	var nDate = new Date(news.newsDate);
+	var nDate = new Date(news.date);
 	var timestamp = 
 		(nDate.getDate() > 10 ? nDate.getDate() : '0' + nDate.getDate()) + '.'
 		+ (nDate.getMonth() > 10 ? (nDate.getMonth()+1) : '0' + (nDate.getMonth()+1)) + '.'
 		+ nDate.getFullYear();
 
-	newsList.prepend(
-		'<a href="#" class="list-group-item list-group-item-info">' 
+	var text = ''
+		+ '<a href="" class="list-group-item list-group-item-info news-element">' 
 			+ '<h5 class="list-group-item-heading">'
 				+ '<span class="glyphicon glyphicon-plus"></span> '
 				+  'New visit'
 			+ '</h5>'
 			+ '<p class="list-group-item-text">'
-				+ news.newsBody
+				+ '%newsBody%'
 			+ '</p>'
 			+ '<p class="list-group-item-text text-right">'
 				+ '<span class="label label-info">'
@@ -541,8 +585,27 @@ function printVisitNews(news) {
 				+ timestamp
 				+ '</span>'
 			+ '</p>'
-		+ '</a>'
-	);
+		+ '</a>';
+
+	var body;
+
+	switch (news.newsType) {
+		case 'gym_visit': 
+			body = '<b><span class="label label-primary">' + news.user + '</span></b> visited GYM';
+			break;
+		case 'pool_visit':
+			body = '<b><span class="label label-primary">' + news.user + '</span></b> visited POOL';
+			break;
+		case 'run_visit':
+			body = '<b><span class="label label-primary">' + news.user + '</span></b> was RUNNING';
+			break;
+	};
+
+	newsList.prepend(text.replace('%newsBody%', body));
+
+	$('.news-element').click(function() {
+		return false;
+	});
 }
 
 function printOtherNews() {

@@ -28,6 +28,10 @@ var newsSchema = new Schema({
 	username: {
 		type: String,
 		default: ''
+	},
+	created:  {
+		type: Date,
+		default: Date.now
 	}
 });
 

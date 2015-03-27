@@ -46,7 +46,11 @@ var visitSchema = new Schema({
 	},
 	poolVisits: [poolVisitSchema],
 	running: [runningSchema],
-	gymVisits: [gymVisitSchema]
+	gymVisits: [gymVisitSchema],
+	created:  {
+		type: Date,
+		default: Date.now
+	}
 });
 
 visitSchema.index({userId: 1, visitDate: 1}, { unique: true});
