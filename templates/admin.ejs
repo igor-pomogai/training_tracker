@@ -121,7 +121,7 @@
 				});
 
 				$(".approve-btn").click(function() {
-					var userLink = this.closest('a'),
+					var userLink = $(this).closest('a'),
 						index = $(userLink).index();
 
 					approveUser(index);
@@ -182,7 +182,7 @@
 
 			}
 
-			function approveUser(index, element) {
+			function approveUser(index) {
 				$.ajax({
 					url: '/userApprove',
 					method: 'POST',

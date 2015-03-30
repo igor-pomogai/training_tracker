@@ -1,0 +1,225 @@
+<% layout('/layout/main') -%>
+
+<div class="container">
+
+	<div class="row"`>
+	
+		<div class="col-sm-12">
+			<h4><b>Edit user</b></h4>
+			<div class="well">
+				<h4><%- user.username %></h4>
+				<a href="">reset password</a>
+				<hr>
+				
+				<form id="usrEditForm" class="form-horizontal" name="usrEditForm">
+
+					<div class="form-group">
+						
+						<div class="col-sm-6">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+								<input type="text" class="form-control" placeholder="Firstname" name="firstname" value="<%-user.firstname%>">
+							</div>
+						</div>
+					
+						<div class="col-sm-6">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+								<input type="text" class="form-control" placeholder="Lastname" name="lastname" value="<%-user.lastname%>">
+							</div>
+						</div>
+
+					</div>
+					
+
+					<div class="form-group">
+						<div class="col-sm-12">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></div>
+								<input type="email" class="form-control" placeholder="Email" name="email" value="<%-user.email%>">
+							</div>
+						</div>	
+					</div>
+					
+					<!--
+					<div class="form-group">
+						<div class="col-sm-12">
+							<div class="input-group">
+							<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+							<input type="text" class="form-control" placeholder="Username" name="username" value="<%-user.username%>">
+						</div>
+						</div>
+					</div>
+					-->
+					<!--
+					<div class="form-group">
+						<div class="col-sm-6">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>
+							  	<input type="password" class="form-control" placeholder="Password" name="password">
+							</div>
+						</div>
+						<div class="col-sm-6">
+							<div class="input-group">
+								<div class="input-group-addon"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>
+							  	<input type="password" class="form-control" placeholder="Confirm password" name="passwordConfirm">
+							</div>
+						</div>
+					</div>
+				-->
+
+					<div class="form-group">
+						<div class="col-sm-12">
+							<p><b>Birth date</b></p>
+						</div>
+						<div class="col-sm-4">
+							<div class="input-group">
+								<div class="input-group-addon">month</div>
+								<input type="text" class="form-control" name="birthMonth" value="<%-user.birthDate.getMonth() + 1%>">
+							</div>
+						</div>
+						<div class="col-sm-3">
+							<div class="input-group">
+								<div class="input-group-addon">day</div>
+								<input class="form-control" type="text" name="birthDate" value="<%- user.birthDate.getDate() %>">
+							</div>
+						</div>
+						<div class="col-sm-5">
+							<div class="input-group">
+								<div class="input-group-addon">year</div>
+								<input class="form-control" type="text" name="birthYear" value="<%- user.birthDate.getFullYear() %>">
+							</div>
+						</div>
+					</div>
+					
+					<button type="submit" class="btn btn-primary btn-block">Save</button>
+
+				</form> 
+				
+				<hr>
+				<p class="text-center"><a href="/profile">cancel</a></p>
+
+				<div id="alertsContainer" hidden>
+					
+				</div>
+	
+			</div>
+			
+		</div>
+
+	</div>
+
+</div>
+
+<script>
+	$(document).ready(function() {
+		var date = new Date('<%- user.birthDate %>');
+		
+		console.log(date);
+		
+		var dayInput = $('input[name="birthDate"');
+		var monthInput = $('input[name="birthDate"');
+		var yearInput = $('input[name="birthDate"');
+		
+		var alertsContainer;
+			var editForm = $('#usrEditForm');
+			
+			editForm.validate({
+				rules: {
+					firstname: {
+						required: true
+					},
+					email: {
+						required: true,
+						email: true
+					},
+					username: {
+						required: true,
+						rangelength: [3, 20]
+					},
+					birthMonth: {
+						required: true
+					},
+					birthDate: {
+						required: true
+					},
+					birthYear: {
+						required: true
+					}
+				},
+				messages: {
+					firstname: {
+						required: "Firstname is required."
+					},
+					email: {
+						required: "Email is required.",
+						email: "Enter valid email address."
+					},
+					username: {
+						required: "Username is required.",
+						rangelength: "Username must be between 3 and 20 characters."
+					}
+				},
+				onfocusout: false,
+				onkeyup: false,
+				focusCleanup: true,
+				debug: false,
+				showErrors: function(errorMap, 	errorList) {
+					var customAlert = '<div class="alert alert-danger alert-dismissible" role="alert">'
+										+ '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+											+ '<span>&times;</span>'
+										+ '</button>'
+										+ '%error%'
+									+ '</div>';
+
+					$('#usrEditForm .input-group').each(function(i) {
+						$(this).removeClass('has-error');
+					});
+
+					alertsContainer = $('#alertsContainer');	
+					alertsContainer.empty();
+
+					var errorsList = '';
+					var errorString = '';
+
+					errorList.forEach(function(element) {
+						$(element.element).parent().addClass('has-error');
+						errorsList += '<li>' + element.message;
+					});
+					errorString = customAlert.replace('%error%', '<ul>' + errorsList + '</ul>');
+					alertsContainer.prepend(errorString);
+					alertsContainer.show();
+				},
+				submitHandler: function(form) {
+					var ajaxdata = {
+						url: "/editUser",
+						method: "POST",
+						data: editForm.serialize(),
+						statusCode: {
+							200: function(data) {
+								var customAlert = '<div class="alert alert-success alert-dismissible" role="alert">'
+										+ '<button type="button" class="close" data-dismiss="alert" aria-label="Close">'
+											+ '<span>&times;</span>'
+										+ '</button>'
+										+ '%error%'
+									+ '</div>';
+
+								console.log(data);
+								alertsContainer.empty();
+								
+								alertsContainer.append(customAlert.replace('%error%', data));
+							},
+							403: function(jqXHR) {
+								var error = JSON.parse(jqXHR.responseText);
+								console.log(error);
+							}
+						}
+					};
+
+					$.ajax(ajaxdata);
+
+					return false;
+				}
+			});
+	});
+</script>

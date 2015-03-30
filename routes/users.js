@@ -9,11 +9,26 @@ exports.get = function(req, res) {
 
 			var usersToSend = [];
 			users.forEach(function(user) {
-				usersToSend.push({
-					username: user.username
-				});
+				if (!user._id.equals(req.session.user)) {
+					usersToSend.push({
+						username: user.username,
+						userId: user._id
+					});
+				}
 			});
 			res.json(usersToSend);
+		});
+};
+
+exports.getById = function(req, res) {
+	console.log(req.query.userId);
+	User
+		.findById(req.query.userId)
+		.exec(function(err, user) {
+			if (err) throw new Error(err);
+			//log.info('user found: ' + user.username);
+			console.log(user);
+			res.json(user);
 		});
 };
 
@@ -43,4 +58,27 @@ exports.remove = function(req, res) {
 
 			res.send(true);
 		});
+};
+
+exports.edit = function(req, res) {
+	User
+		.findById(req.session.user)
+		.exec(function(err, user) {
+			if (err) throw new Error(err);
+
+			var date;
+
+			user.firstname = req.body.firstname;
+			user.lastname = req.body.lastname;
+			user.email = req.body.email;
+
+			user.birthDate = new Date(req.body.birthYear, req.body.birthMonth - 1, req.body.birthDate);
+
+			user.save(function(err) {
+				if (err) throw new Error(err);
+
+				log.info('user updated: ' + user.username);
+				res.send('User info updated.');
+			});
+		});	
 };

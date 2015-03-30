@@ -4,15 +4,6 @@
 <script src="/js/trainingweek.js"></script>
 
 <div class="container">
-	<div class="row">
-		<div class="col-sm-12">
-			<ul class="nav nav-pills personal-page-nav">
-				<li role="presentation" class="active" id="personalDashBtn"><a href="">Dashboard</a></li>
-				<li role="presentation" id="personalProfileBtn"><a href="">Profile</a></li>
-			</ul>
-		</div>
-	</div>
-	<hr>
 	
 	<div class="row" id="dashboardPage" >
 	
@@ -312,41 +303,20 @@
 		</div>
 	
 	</div>
-
-	<div class="row" id="profilePage" >
-		<div class="col-sm-12">
-			<p><b>User details</b></p>
-			<div class="well">
-				<h4><%- user.firstname + ' ' + user.lastname %></h4>
-				<button class="btn btn-primary btn-xs">Edit</button>
-				<hr>
-				
-				<p><b>account info</b></p>
-
-				<p><%- 'username: ' + user.username %></p>
-				<p><%- 'email: ' + user.email %></p>
-				<p><%- 'birthdate: ' + user.birthDate %></p>
-
-				<br>
-				<p><b>body info</b></p>
-
-				<p><%- 'weight: in development' %></p>
-				<p><%- 'push: in development' %></p>
-				<p><%- 'arm: in development' %></p>
-			</div>
-			
-		</div>
-	</div>
+	
 	<hr>
+	
 	<p class="text-center">made by <b>dayaram</b></p>
+
 </div>
 
 
 <script>
 
-var date;
+var date, friendsList;
 
 $(document).ready(function() {
+	
 	$.ajax({
 		url: "/latestNews",
 		method: "GET"
@@ -362,32 +332,24 @@ $(document).ready(function() {
 		method: "GET"
 	})
 	.done(function(loadedFriends) {
+		var i = 0;
+		friendsList = [];
+
 		loadedFriends.forEach(function(friend) {
-			$('#friendsList').append('<li class="list-group-item">' + friend.username + '<span class="badge">info</span></li>');
+			$('#friendsList').append('<a href="" class="list-group-item">' + friend.username + '<span class="badge">info</span></a>');
+			friendsList[i++] = friend.userId;
+		});
+
+		$('#friendsList>a').click(function() {
+			var friendIndex = $(this).index();
+			console.log(friendsList[friendIndex]);
+
+			window.location.href = '/profile?userId='+friendsList[friendIndex];
+			return false;
 		});
 	});
 
 	loadVisitsTable();
-});
-
-$('.personal-page-nav li').click(function() {
-	$('.personal-page-nav li.active').removeClass("active");
-	$(this).addClass('active');
-
-	console.log($(this));
-
-	switch ($(this).attr('id')) {
-		case "personalDashBtn": 
-			$('#dashboardPage').show();
-			$('#profilePage').hide();
-			break;
-		case "personalProfileBtn":
-			$('#dashboardPage').hide();
-			$('#profilePage').show();
-			break;
-	}
-
-	return false;
 });
 
 $('#personalWidget form').on('submit', function() {
@@ -430,7 +392,7 @@ $('#dateLabel').append('Today: '
 	+ ((date.getMonth() < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '.' +
 	+ date.getFullYear()
 	);
-  
+
 var newsList = $('#newsList');
 
 var socket = io.connect('', {
