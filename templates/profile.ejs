@@ -3,35 +3,37 @@
 <div class="container">
 	<div class="row" id="profilePage">
 		<div class="col-sm-12">
-			<h4><b>User details</b></h4>
-			<div class="well">
-				<h4><%- selectedUser.firstname + ' ' + selectedUser.lastname %></h4>
+			<div class="panel panel-default">
+				<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> User details</div>
+				<div class="panel-body">
+					<h4><%- selectedUser.firstname + ' ' + selectedUser.lastname %></h4>
 
-				<% if (canEdit) { %> <button class="btn btn-primary btn-xs" id="profileEditBtn">Edit</button> <% } %>
-				<hr>
-				
-				<p><b>account info</b></p>
+					<% if (canEdit) { %> <button class="btn btn-primary btn-xs" id="profileEditBtn">Edit</button> <% } %>
+					<hr>
+					
+					<p><b>account info</b></p>
 
-				<p><%- 'username: ' + selectedUser.username %></p>
-				<p><%- 'email: ' + selectedUser.email %></p>
-				<p><%- 'birthdate: ' %>
-					<% 	var date = selectedUser.birthDate;
-						var formatedDateString = ((date.getDate() < 10) ? '0' + date.getDate() : date.getDate()) + '.'
-							+ ((date.getMonth() < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '.' +
-							+ date.getFullYear();
-					 %>
+					<p><%- 'username: ' + selectedUser.username %></p>
+					<p><%- 'email: ' + selectedUser.email %></p>
+					<p><%- 'birthdate: ' %>
+						<% 	var date = selectedUser.birthDate;
+							var formatedDateString = ((date.getDate() < 10) ? '0' + date.getDate() : date.getDate()) + '.'
+								+ ((date.getMonth() < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '.' +
+								+ date.getFullYear();
+						 %>
 
-					<%- formatedDateString %> 
+						<%- formatedDateString %> 
 
-				</p>
+					</p>
 
-				<br>
-				<p><b>body info</b></p>
+					<br>
+					<p><b>body info</b></p>
 
-				<p><%- 'weight: in development' %></p>
-				<p><%- 'push: in development' %></p>
-				<p><%- 'arm: in development' %></p>
-			</div>	
+					<p><%- 'weight: in development' %></p>
+					<p><%- 'push: in development' %></p>
+					<p><%- 'arm: in development' %></p>
+				</div>
+			</div>
 		</div>
 	</div>
 

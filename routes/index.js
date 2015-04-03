@@ -18,7 +18,6 @@ module.exports = function(app) {
 
 	app.post('/logout', require('./logout').post);
 
-	
 	app.get('/latestNews', require('./latestNews').get);
 
 	app.get('/loadFriends', require('./users').get);
@@ -27,7 +26,11 @@ module.exports = function(app) {
 	app.post('/editUser', require('./users').edit);
 	app.post('/removeUser', require('./users').remove);
 
-	app.get('/loadVisits', require('./visits').get);
+	app.get('/people', require('./people').get);
+	app.get('/getPeople', require('./people').getPeople);
+	app.post('/addFriend', require('./people').addFriend);
+
+	app.get('/loadVisits', require('./visits').getVisits);
 
 	app.get('/register', require('./register').get);
 	app.post('/register', require('./register').post);

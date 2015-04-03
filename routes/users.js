@@ -2,21 +2,47 @@ var User = require('models/user').User;
 var log = require('libs/log')(module);
 
 exports.get = function(req, res) {
-	User
-		.find({})
-		.exec(function(err, users) {
-			if (err) throw new Error(err);
+	var friendsIds = [];
 
-			var usersToSend = [];
-			users.forEach(function(user) {
-				if (!user._id.equals(req.session.user)) {
-					usersToSend.push({
-						username: user.username,
-						userId: user._id
+	User
+		.findOne({
+			_id: req.session.user
+		}, function(err, currentUser) {
+			if (err) return new Error(err);
+
+			log.info('friends: ');
+			console.log(currentUser.friends);
+
+			log.info('friends ids: ');
+			if (currentUser.friends.length > 0) {
+				currentUser.friends.forEach(function(friend) {
+					
+					console.log(friend.userId);
+
+					friendsIds.push(friend.userId);
+				});
+			} else {
+				log.info('sorry, ' + currentUser.username + ' you have no friends yet :( ');
+			}
+
+			User
+				.find({})
+				.where('_id')
+				.in(friendsIds)
+				.exec(function(err, users) {
+					if (err) throw new Error(err);
+
+					var usersToSend = [];
+					users.forEach(function(user) {
+						if (!user._id.equals(req.session.user)) {
+							usersToSend.push({
+								username: user.username,
+								userId: user._id
+							});
+						}
 					});
-				}
-			});
-			res.json(usersToSend);
+					res.json(usersToSend);
+				});
 		});
 };
 

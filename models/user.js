@@ -10,12 +10,19 @@ var mongoose = require('libs/mongoose'),
 		message: 'No such user group'
 	};
 
+var ObjectId = mongoose.Schema.Types.ObjectId;
+
 var userGroupSchema = new Schema({
 	name: {
 		type: String, 
 		enum: userGroupTypes,
 		default: 'user'	
 	} 
+});
+
+var userFriendsSchema = new Schema({
+	username: String,
+	userId: ObjectId
 });
 
 var schema = new Schema({
@@ -41,6 +48,8 @@ var schema = new Schema({
 		default: false
 	},
 	userGroup: [userGroupSchema],
+	friends: [userFriendsSchema],
+
 	hashedPassword: {
 		type: String,
 		required: true
@@ -52,7 +61,71 @@ var schema = new Schema({
 	created:  {
 		type: Date,
 		default: Date.now
-	}
+	},
+
+	country: {
+		type: String,
+		required: true
+	},
+	city: {
+		type: String,
+		required: true
+	},
+
+	weight: [new Schema({
+		value: {
+			type: Number,
+			required: true,
+			default: 0
+		},
+		date: {
+			type: Date,
+			required: true,
+			default: Date.now
+		}
+	})],
+	height: {
+		type: Number,
+		required: true,
+		default: 0
+	},
+	armSize: [new Schema({
+		value: {
+			type: Number,
+			required: true,
+			default: 0
+		},
+		date: {
+			type: Date,
+			required: true,
+			default: Date.now
+		}
+	})],
+	chestSize: [new Schema({
+		value: {
+			type: Number,
+			required: true,
+			default: 0
+		},
+		date: {
+			type: Date,
+			required: true,
+			default: Date.now
+		}
+	})],
+
+	pushWeight: [new Schema({
+		value: {
+			type: Number,
+			required: true,
+			default: 0
+		},
+		date: {
+			type: Date,
+			required: true,
+			default: Date.now
+		}
+	})]
 });
 
 schema.methods.encryptPassword = function(password) {
@@ -69,6 +142,13 @@ schema.virtual('password')
 
 schema.methods.checkPassword = function(password) {
 	return this.encryptPassword(password) === this.hashedPassword;
+};
+
+schema.methods.addFriend = function(username, friendId) {
+	this.friends.push({
+		username: username,
+		userId: friendId
+	});
 };
 
 schema.statics.authorize = function(username, password, callback) {

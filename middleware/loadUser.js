@@ -13,7 +13,7 @@ module.exports = function(req, res, next) {
 		req.user = res.locals.user = user;
 		req.session.user = user._id;
 
-		log.info('user exists: username= ' + req.user.username);
+		//log.info('user exists: username= ' + req.user.username);
 
 		next();
 	});

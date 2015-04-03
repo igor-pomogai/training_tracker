@@ -13,10 +13,14 @@
 			<ul class="nav navbar-nav top-navbar">
 				
 				<% if (user) { %> 
-				
+				 
 				<li><a href="/personal">Dashboard</a></li>
 
 				<li><a href="/profile">Profile</a></li>
+
+				<li><a href="/people">People</a></li>
+
+				<li><a href="/people">Chat</a></li>
 
 				
 				<% } %>
@@ -27,7 +31,7 @@
 						for (var i=0; i<user.userGroup.length; i++) {
 							if (user.userGroup[i].name == 'admin') {
 				%>
-								<li><a href="/admin">Admin panel</a></li>			
+								<li><a href="/admin"><b>[admin panel]</b></a></li>			
 				<%
 								break;
 							}

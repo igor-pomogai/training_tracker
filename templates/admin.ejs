@@ -144,7 +144,7 @@
 
 				var userDetails = ''
 					+ '<h4>' + usr.firstname + ' ' + usr.lastname + '</h4>'
-					+ '<button class="btn btn-primary btn-xs">Edit</button> '
+					//+ '<button class="btn btn-primary btn-xs">Edit</button> '
 					+ '<button class="btn btn-danger btn-xs remove-usr-btn">Remove</button>'
 					+ '<hr>'
 					
@@ -164,7 +164,7 @@
 
 				$('#userInfo').empty().append(userDetails);
 				
-				$('.remove-usr-btn').click(function() {
+				$('#userInfo .remove-usr-btn').click(function() {
 					$.ajax({
 						url: '/removeUser',
 						method: 'POST',

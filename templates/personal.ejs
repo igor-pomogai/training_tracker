@@ -4,6 +4,21 @@
 <script src="/js/trainingweek.js"></script>
 
 <div class="container">
+
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="alert alert-info" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<strong>Welcome</strong> to personal training tracker. Get ready to competition.
+				<ul>
+					<li>Use control panel to save your trainings.</li>
+					<li><strong>"Your hard week"</strong> will display the badges for each your training on a week table.</li>
+					<li><strong>"News"</strong> will display the visits and other usefull tweets from system and your friends.</li>
+					<li><strong>"Points"</strong> table will reflect results of your friends and will show you who is the leader.</li>
+				</ul>
+			</div>
+		</div>
+	</div>
 	
 	<div class="row" id="dashboardPage" >
 	
@@ -76,7 +91,7 @@
 
 			<div class="row">
 				<div class="col-md-8">
-					<div class="panel panel-default">
+					<div class="panel panel-default hidden-xs">
 						<div class="panel-heading">
 							<span class="glyphicon glyphicon-calendar"></span> Your hard week
 						</div>
@@ -256,25 +271,12 @@
 						</table>
 					</div>
 
-					<div class="panel panel-default">
+					<div id="visitsWidget" class="panel panel-default">
 						<div class="panel-heading">
 							<span class="glyphicon glyphicon-calendar"></span> Visits
 						</div>
-						<div class="panel-body">
-							March, 2015
-						</div>
-						<table id="visitsTable" class="table table-condensed table-bordered">
-							<tr>
-								<td></td>
-								<td><span class="label label-success">gym</span></td>
-								<td><span class="label label-info">pool</span></td>
-								<td><span class="label label-warning">running</span></td>
-							</tr>
-						</table>
-						<div class="panel-body">
-							<a href="#">load more</a>
-						</div>
 					</div>
+
 				</div>
 				<div class="col-md-4">
 					<div class="panel panel-default">
@@ -313,331 +315,358 @@
 
 <script>
 
-var date, friendsList;
-
 $(document).ready(function() {
-	
-	$.ajax({
-		url: "/latestNews",
-		method: "GET"
-	})
-	.done(function(loadedNews) {
-		loadedNews.reverse().forEach(function(news) {
-			printVisitNews(news);
-		});
-	});
+	var newsList = $('#newsList');
+	var socket;
 
-	$.ajax({
-		url: "/loadFriends",
-		method: "GET"
-	})
-	.done(function(loadedFriends) {
-		var i = 0;
-		friendsList = [];
+	loadFriends();
+	loadVisitsTable();
+	loadLatestNews();
 
-		loadedFriends.forEach(function(friend) {
-			$('#friendsList').append('<a href="" class="list-group-item">' + friend.username + '<span class="badge">info</span></a>');
-			friendsList[i++] = friend.userId;
-		});
+	showTodayDate();
 
-		$('#friendsList>a').click(function() {
-			var friendIndex = $(this).index();
-			console.log(friendsList[friendIndex]);
+	initSocket();
+	initVisitForm();
 
-			window.location.href = '/profile?userId='+friendsList[friendIndex];
+	function initVisitForm() {
+		$('#personalWidget form').on('submit', function() {
+			var form = $(this);
+
+		    $.ajax({
+				url: "/visit",
+				method: "POST",
+				data: form.serialize(),
+				statusCode: {
+					200: function(newsToShow) {
+						$('#successSaveAlert').show();
+					  	
+					  	setTimeout(function() {
+					  		$('#successSaveAlert').hide();
+						}, 2000);
+
+					  	var weekDay = '<%= dayOfWeek %>';
+						redrawTrainingWeek(newsToShow, weekDay);
+
+					  	newsToShow.forEach(function(news) {
+					  		sendVisitNews(news);
+					  	});
+
+					  	loadVisitsTable();
+					},
+					403: function(jqXHR) {
+						var error = JSON.parse(jqXHR.responseText);
+					}
+				}
+			});
 			return false;
 		});
-	});
+	}
 
-	loadVisitsTable();
-});
+	function initSocket() {
+		socket = io.connect('', {
+			reconnect: false
+		});
 
-$('#personalWidget form').on('submit', function() {
-	var form = $(this);
+		socket
+			.on('newVisit', function(newsObj) {
+				printVisitNews(newsObj);
+			})
+			.on('getNews', function(allNews) {
+				allNews.forEach(function(news) {
+					printVisitNews(news);
+				});
+			})
+			.on('connect', function() {
+				printStatus("соединение установлено");
+			})
+			.on('disconnect', function() {
+				printStatusError("соединение потеряно");
+				setTimeout(reconnect, 500);
+			});
+	}
 
-    $.ajax({
-		url: "/visit",
-		method: "POST",
-		data: form.serialize(),
-		statusCode: {
-			200: function(newsToShow) {
-				//window.location.href = "/personal";
-				$('#successSaveAlert').show();
-			  	
-			  	setTimeout(function() {
-			  		$('#successSaveAlert').hide();
-				}, 2000);
+	function showTodayDate() {
+		var date = new Date();	
 
-			  	var weekDay = '<%= dayOfWeek %>';
-				redrawTrainingWeek(newsToShow, weekDay);
+		$('#dateLabel')
+			.append('Today: ' 
+				+ ((date.getDate() < 10) ? '0' + date.getDate() : date.getDate()) + '.'
+				+ ((date.getMonth() < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '.' +
+				+ date.getFullYear()
+			);
+	}
 
-			  	newsToShow.forEach(function(news) {
-			  		sendVisitNews(news);
-			  	});
+	function loadLatestNews() {
+		$.ajax({
+			url: "/latestNews",
+			method: "GET"
+		})
+		.done(function(loadedNews) {
+			loadedNews.reverse().forEach(function(news) {
+				printVisitNews(news);
+			});
+		});
+	}
 
-			  	loadVisitsTable();
-			},
-			403: function(jqXHR) {
-				var error = JSON.parse(jqXHR.responseText);
+	function loadFriends() {
+		var friendsList;
+
+		$.ajax({
+			url: "/loadFriends",
+			method: "GET"
+		})
+		.done(function(loadedFriends) {
+			var i = 0;
+			friendsList = [];
+
+			loadedFriends.forEach(function(friend) {
+				$('#friendsList').append('<a href="" class="list-group-item">' + friend.username + '<span class="badge">info</span></a>');
+				friendsList[i++] = friend.userId;
+			});
+
+			$('#friendsList>a').click(function() {
+				var friendIndex = $(this).index();
+				console.log(friendsList[friendIndex]);
+
+				window.location.href = '/profile?userId='+friendsList[friendIndex];
+				return false;
+			});
+		});
+	}
+
+	function sendVisitNews(newsType) {
+		socket.emit('newVisit', newsType, function(res) {
+			if (!res.exists) {
+				printVisitNews(res.news);
 			}
-		}
-	});
-	return false;
-});
-
-date = new Date();	
-
-$('#dateLabel').append('Today: ' 
-	+ ((date.getDate() < 10) ? '0' + date.getDate() : date.getDate()) + '.'
-	+ ((date.getMonth() < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '.' +
-	+ date.getFullYear()
-	);
-
-var newsList = $('#newsList');
-
-var socket = io.connect('', {
-	reconnect: false
-});
-
-socket
-	.on('newVisit', function(newsObj) {
-		printVisitNews(newsObj);
-	})
-	.on('getNews', function(allNews) {
-		allNews.forEach(function(news) {
-			printVisitNews(news);
 		});
-	})
-	.on('connect', function() {
-		printStatus("соединение установлено");
-	})
-	.on('disconnect', function() {
-		printStatusError("соединение потеряно");
-		setTimeout(reconnect, 500);
-	});
 
-function sendVisitNews(newsType) {
-	socket.emit('newVisit', newsType, function(res) {
-		if (!res.exists) {
-			printVisitNews(res.news);
-		}
-	});
-
-	return false;
-}
-
-function reconnect() {
-	socket.once('error', function() {
-		setTimeout(reconnect, 500);
-	});
-	socket.socket.connect();
-}
-
-function printStatus(status) {
-	//$('<a href="#" class="list-group-item list-group-item-success">').append($('<i>').text(status)).appendTo(newsList);
-	$('#newsPanelHeading').prepend('<span class="glyphicon glyphicon-link"></span> ');
-}
-
-function loadVisitsTable() {
-	var date = new Date();
-	$.ajax({
-		url: "/loadVisits",
-		method: "GET",
-		data: {
-			date: date
-		}
-	})
-	.done(function(loadedVisits) {
-		updateVisitsTable(loadedVisits);
-		updatePointsTable(loadedVisits);
-	});
-}
-
-function updateVisitsTable(visits) {
-	var table = $('#visitsTable');
-	var entry = '';
-	var header = '<tr>'
-					+ '<td></td>'
-					+ '<td><span class="label label-success">gym</span></td>'
-					+ '<td><span class="label label-info">pool</span></td>'
-					+ '<td><span class="label label-warning">running</span></td>'
-				+ '</tr>';
-
-	table.empty();
-	table.append(header);
-	
-	Object.keys(visits).forEach(function(visit) {
-		entry = '<tr>'
-					+ '<td>'+ visits[visit].username +'</td>'
-					+ '<td>' + visits[visit].gym + '</td>'
-					+ '<td>' + visits[visit].pool + '</td>'
-					+ '<td>' + visits[visit].run + '</td>'
-				+ '</tr>';
-
-		table.append(entry);
-	});
-}
-
-function updatePointsTable(visits) {
-	var ptsList, winElem, normElem, ptsArray, points, gymCoeff, poolCoeff, runCoeff;
-	
-	ptsList = $('#pointsList');
-	ptsList.empty();
-
-	winElem = '<li class="list-group-item list-group-item-success">'
-						+ '<span class="glyphicon glyphicon-star"></span>'
-						+ ' %user%'
-						+ '<span class="badge">%points%</span>'
-					+ '</li>';
-	normElem = '<li class="list-group-item">%user%<span class="badge">%points%</span></li>';
-
-	gymCoeff = 1.0;
-	runCoeff = poolCoeff = 0.5;
-
-	ptsArray = [];
-
-	Object.keys(visits).forEach(function(visit) {
-		points = (visits[visit].gym * gymCoeff)
-				+ (visits[visit].pool * poolCoeff) 
-				+ (visits[visit].run * runCoeff);
-		ptsArray.push({
-			user: visits[visit].username,
-			pts: points
-		});
-	});
-
-	ptsArray.sort(function(a, b) {
-		if (a.pts > b.pts) return -1;
-		else return 1;
-		return 0;
-	});
-
-	ptsList.append(winElem.replace('%user%', ptsArray[0].user).replace('%points%', ptsArray[0].pts));
-
-	ptsArray.forEach(function(entry, index) {
-		if (index > 0) {
-			ptsList.append(normElem.replace('%user%', entry.user).replace('%points%', entry.pts));
-		}
-	});	
-}
-
-function printStatusError(status) {
-	$('<a href="#" class="list-group-item list-group-item-danger">').append($('<i>').text(status)).appendTo(newsList);
-}
-
-function printVisitNews(news) {
-	var nDate = new Date(news.date);
-	var timestamp = 
-		(nDate.getDate() > 10 ? nDate.getDate() : '0' + nDate.getDate()) + '.'
-		+ (nDate.getMonth() > 10 ? (nDate.getMonth()+1) : '0' + (nDate.getMonth()+1)) + '.'
-		+ nDate.getFullYear();
-
-	var text = ''
-		+ '<a href="" class="list-group-item list-group-item-info news-element">' 
-			+ '<h5 class="list-group-item-heading">'
-				+ '<span class="glyphicon glyphicon-plus"></span> '
-				+  'New visit'
-			+ '</h5>'
-			+ '<p class="list-group-item-text">'
-				+ '%newsBody%'
-			+ '</p>'
-			+ '<p class="list-group-item-text text-right">'
-				+ '<span class="label label-info">'
-				+ '<span class="glyphicon glyphicon-time"></span> '
-				+ timestamp
-				+ '</span>'
-			+ '</p>'
-		+ '</a>';
-
-	var body;
-
-	switch (news.newsType) {
-		case 'gym_visit': 
-			body = '<b><span class="label label-primary">' + news.user + '</span></b> visited GYM';
-			break;
-		case 'pool_visit':
-			body = '<b><span class="label label-primary">' + news.user + '</span></b> visited POOL';
-			break;
-		case 'run_visit':
-			body = '<b><span class="label label-primary">' + news.user + '</span></b> was RUNNING';
-			break;
-	};
-
-	newsList.prepend(text.replace('%newsBody%', body));
-
-	$('.news-element').click(function() {
 		return false;
-	});
-}
+	}
 
-function printOtherNews() {
-	newsList.prepend(
-		'<a href="#" class="list-group-item list-group-item-warning">' 
-			+ '<h5 class="list-group-item-heading">'
-				+ '<span class="glyphicon glyphicon-tint"></span> '
-				+  'Someone got sick'
-			+ '</h5>'
-			+ '<p class="list-group-item-text">'
-				+ text
-			+ '</p>'
-			+ '<p class="list-group-item-text text-right">'
-				+ '<span class="glyphicon glyphicon-time"></span> '
-				+ '25.02.2015'
-			+ '</p>'
-		+ '</a>'
-	);
+	function reconnect() {
+		socket.once('error', function() {
+			setTimeout(reconnect, 500);
+		});
+		socket.socket.connect();
+	}
 
-	newsList.prepend(
-		'<a href="#" class="list-group-item list-group-item-success">' 
-			+ '<h5 class="list-group-item-heading">'
-				+ '<span class="glyphicon glyphicon-ok"></span> '
-				+  'Achievement'
-			+ '</h5>'
-			+ '<p class="list-group-item-text">'
-				+ text
-			+ '</p>'
-			+ '<p class="list-group-item-text text-right">'
-				+ '<span class="glyphicon glyphicon-time"></span> '
-				+ '25.02.2015'
-			+ '</p>'
-		+ '</a>'
-	);
+	function printStatus(status) {
+		$('#newsPanelHeading')
+			.prepend('<span class="glyphicon glyphicon-link"></span> ');
+	}
 
-	newsList.prepend(
-		'<a href="#" class="list-group-item list-group-item-danger">' 
-			+ '<h5 class="list-group-item-heading">'
-				+ '<span class="glyphicon glyphicon-remove"></span> '
-				+  'Someone failed aim'
-			+ '</h5>'
-			+ '<p class="list-group-item-text">'
-				+ text
-			+ '</p>'
-			+ '<p class="list-group-item-text text-right">'
-				+ '<span class="glyphicon glyphicon-time"></span> '
-				+ '25.02.2015'
-			+ '</p>'
-		+ '</a>'
-	);
+	function loadVisitsTable() {
+		$.ajax({
+			url: "/loadVisits",
+			method: "GET"
+		})
+		.done(function(loadedVisits) {
+			updateVisitsTable(loadedVisits);
+			updatePointsTable(loadedVisits.visitsArray);
+		});
+	}
 
-	newsList.append(
-		'<div class="panel-body">For March:</div>'
-	);
+	function updateVisitsTable(visitsObj) {
+		var visits = visitsObj.visitsArray;
+		var visitsWidget = $('#visitsWidget');
+		var monthPanelBody = '<div class="panel-body">%date%</div>';
+		var visitsTable = '<table id="visitsTable" class="table table-condensed table-bordered"></table>';
+		var loadMoreLink = '<div id="loadMoreVisitsLink" class="panel-body"><a href="#">load more</a></div>';
 
-	newsList.append(
-		'<a href="#" class="list-group-item list-group-item-info">' 
-			+ '<h5 class="list-group-item-heading">'
-				+ '<span class="glyphicon glyphicon-plus"></span> '
-				+  'New visit'
-			+ '</h5>'
-			+ '<p class="list-group-item-text">'
-				+ text
-			+ '</p>'
-			+ '<p class="list-group-item-text text-right">'
-				+ '<span class="glyphicon glyphicon-time"></span> '
-				+ '25.02.2015'
-			+ '</p>'
-		+ '</a>'
-	);
-}
+		visitsWidget.append(monthPanelBody.replace('%date%', visitsObj.date));
+		visitsWidget.append(visitsTable);
+		visitsWidget.append(loadMoreLink);
+
+		var table = $('#visitsTable');
+
+		var entry = '';
+		var header = '<tr>'
+						+ '<td></td>'
+						+ '<td><span class="label label-success">gym</span></td>'
+						+ '<td><span class="label label-info">pool</span></td>'
+						+ '<td><span class="label label-warning">running</span></td>'
+					+ '</tr>';
+
+		table.empty();
+		table.append(header);
+		Object.keys(visits).forEach(function(visit) {
+			entry += '<tr>'
+						+ '<td>'+ visits[visit].username +'</td>'
+						+ '<td>' + visits[visit].gym + '</td>'
+						+ '<td>' + visits[visit].pool + '</td>'
+						+ '<td>' + visits[visit].run + '</td>'
+					+ '</tr>';
+		});
+		table.append(entry);
+	}
+
+	function updatePointsTable(visits) {
+		var ptsList, winElem, normElem, ptsArray, points;
+		
+		ptsList = $('#pointsList');
+		ptsList.empty();
+
+		winElem = '<li class="list-group-item list-group-item-success">'
+							+ '<span class="glyphicon glyphicon-star"></span>'
+							+ ' %user%'
+							+ '<span class="badge">%points%</span>'
+						+ '</li>';
+		normElem = '<li class="list-group-item">%user%<span class="badge">%points%</span></li>';
+
+		ptsArray = [];
+		for (var key in visits) {
+			ptsArray.push({
+				username: visits[key].username,
+				points: visits[key].points
+			})
+		}
+
+		ptsArray.sort(function(a, b) {
+			if (a.points < b.points) return 1;
+			if (a.points > b.points) return -1;
+			return 0;
+		});
+
+		ptsList
+			.append(
+				winElem
+					.replace('%user%', ptsArray[0].username)
+					.replace('%points%', ptsArray[0].points));
+		
+
+		ptsArray.forEach(function(visit, index) {
+			if (index > 0) {
+				ptsList
+					.append(
+						normElem
+							.replace('%user%', visit.username)
+							.replace('%points%', visit.points));
+			}
+		});
+	}
+
+	function printStatusError(status) {
+		$('<a href="#" class="list-group-item list-group-item-danger">')
+			.append($('<i>').text(status)).appendTo(newsList);
+	}
+
+	function printVisitNews(news) {
+		var nDate = new Date(news.date);
+		var timestamp = 
+			(nDate.getDate() > 10 ? nDate.getDate() : '0' + nDate.getDate()) + '.'
+			+ (nDate.getMonth() > 10 ? (nDate.getMonth()+1) : '0' + (nDate.getMonth()+1)) + '.'
+			+ nDate.getFullYear();
+
+		var text = ''
+			+ '<a href="" class="list-group-item list-group-item-info news-element">' 
+				+ '<h5 class="list-group-item-heading">'
+					+ '<span class="glyphicon glyphicon-plus"></span> '
+					+  'New visit'
+				+ '</h5>'
+				+ '<p class="list-group-item-text">'
+					+ '%newsBody%'
+				+ '</p>'
+				+ '<p class="list-group-item-text text-right">'
+					+ '<span class="label label-info">'
+					+ '<span class="glyphicon glyphicon-time"></span> '
+					+ timestamp
+					+ '</span>'
+				+ '</p>'
+			+ '</a>';
+
+		var body;
+
+		switch (news.newsType) {
+			case 'gym_visit': 
+				body = '<b><span class="label label-primary">' + news.user + '</span></b> visited GYM';
+				break;
+			case 'pool_visit':
+				body = '<b><span class="label label-primary">' + news.user + '</span></b> visited POOL';
+				break;
+			case 'run_visit':
+				body = '<b><span class="label label-primary">' + news.user + '</span></b> was RUNNING';
+				break;
+		};
+
+		newsList.prepend(text.replace('%newsBody%', body));
+
+		$('.news-element').click(function() {
+			return false;
+		});
+	}
+
+	function printOtherNews() {
+		newsList.prepend(
+			'<a href="#" class="list-group-item list-group-item-warning">' 
+				+ '<h5 class="list-group-item-heading">'
+					+ '<span class="glyphicon glyphicon-tint"></span> '
+					+  'Someone got sick'
+				+ '</h5>'
+				+ '<p class="list-group-item-text">'
+					+ text
+				+ '</p>'
+				+ '<p class="list-group-item-text text-right">'
+					+ '<span class="glyphicon glyphicon-time"></span> '
+					+ '25.02.2015'
+				+ '</p>'
+			+ '</a>'
+		);
+
+		newsList.prepend(
+			'<a href="#" class="list-group-item list-group-item-success">' 
+				+ '<h5 class="list-group-item-heading">'
+					+ '<span class="glyphicon glyphicon-ok"></span> '
+					+  'Achievement'
+				+ '</h5>'
+				+ '<p class="list-group-item-text">'
+					+ text
+				+ '</p>'
+				+ '<p class="list-group-item-text text-right">'
+					+ '<span class="glyphicon glyphicon-time"></span> '
+					+ '25.02.2015'
+				+ '</p>'
+			+ '</a>'
+		);
+
+		newsList.prepend(
+			'<a href="#" class="list-group-item list-group-item-danger">' 
+				+ '<h5 class="list-group-item-heading">'
+					+ '<span class="glyphicon glyphicon-remove"></span> '
+					+  'Someone failed aim'
+				+ '</h5>'
+				+ '<p class="list-group-item-text">'
+					+ text
+				+ '</p>'
+				+ '<p class="list-group-item-text text-right">'
+					+ '<span class="glyphicon glyphicon-time"></span> '
+					+ '25.02.2015'
+				+ '</p>'
+			+ '</a>'
+		);
+
+		newsList.append(
+			'<div class="panel-body">For March:</div>'
+		);
+
+		newsList.append(
+			'<a href="#" class="list-group-item list-group-item-info">' 
+				+ '<h5 class="list-group-item-heading">'
+					+ '<span class="glyphicon glyphicon-plus"></span> '
+					+  'New visit'
+				+ '</h5>'
+				+ '<p class="list-group-item-text">'
+					+ text
+				+ '</p>'
+				+ '<p class="list-group-item-text text-right">'
+					+ '<span class="glyphicon glyphicon-time"></span> '
+					+ '25.02.2015'
+				+ '</p>'
+			+ '</a>'
+		);
+	}
+});
+
+
 
 </script>

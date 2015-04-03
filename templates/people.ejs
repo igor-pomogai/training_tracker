@@ -1,0 +1,98 @@
+<% layout('/layout/main') -%>
+
+<div class="container">
+	<div class="row">
+		<div class="col-sm-12">
+			<div class="panel panel-default">
+				<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> Search</div>
+				<div class="panel-body">
+					
+				</div>
+			</div>
+
+			<div class="panel panel-default">
+				<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> People</div>
+				<ul id="usersList" class="list-group">
+					
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+$(document).ready(function() {
+	loadPeople();
+
+	function loadPeople() {
+		var errorHandler = function(err) {
+			console.log(err);
+		};
+
+		var successHandler = function(data) {
+			var i = 0;
+			peopleList = [];
+
+			$('#usersList').empty();
+			
+			data.forEach(function(user) {
+				$('#usersList')
+					.append('<li class="list-group-item">' 
+						+ '<a href="#">'
+						+ user.name 
+						+ '</a>'
+						+ ' <button class="btn btn-success btn-xs pull-right add-friend-button">'
+						+ '<span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Add'
+						+ '</button>'						
+
+						+ '</li>');
+
+				peopleList[i++] = user.userId;
+			});
+
+			$('#usersList>li>.add-friend-button').click(function() {
+				var userIndex = $(this).parent().index();
+				console.log(peopleList[userIndex]);
+
+				var addFriendSuccessHandler = function(data) {
+					if (data) {
+						loadPeople();
+					}
+				};
+
+				var addFriendErrorHandler = function(err) {
+
+				};
+
+				$.ajax({
+					url: '/addFriend',
+					method: 'POST',
+					data: {
+						userId: peopleList[userIndex]
+					},
+					success: addFriendSuccessHandler,
+					error: addFriendErrorHandler
+				});
+
+				//window.location.href = '/profile?userId='+peopleList[userIndex];
+				return false;
+			});
+
+			$('#usersList>li>a').click(function() {
+				var userIndex = $(this).parent().index();
+				console.log(peopleList[userIndex]);
+
+				window.location.href = '/profile?userId='+peopleList[userIndex];
+				return false;
+			});
+		};	
+
+		$.ajax({
+			url: '/getPeople',
+			method: 'GET',
+			success: successHandler,
+			error: errorHandler
+		});
+	}
+});
+</script>

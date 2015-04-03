@@ -1,6 +1,7 @@
 var log = require('libs/log')(module);
 var	News = require('models/news').News;
 var User = require('models/user').User;
+var config = require('config');
 
 module.exports = function(server, sessionMiddleware) {
 	var io = require('socket.io').listen(server);
@@ -13,9 +14,14 @@ module.exports = function(server, sessionMiddleware) {
 
 	io.sockets.on('connection', function (socket) {
 
+		log.info('socket connection set up.');
+
 		socket.on('newVisit', function (newsType, cb) {
 			var today = new Date();	
-			var todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+			var todayDate = new Date(
+				today.getFullYear(), 
+				today.getMonth(), 
+				today.getDate());
 
 		  	News.findOne({
 		  		userId: socket.request.session.user, 

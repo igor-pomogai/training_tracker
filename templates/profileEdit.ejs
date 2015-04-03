@@ -5,104 +5,79 @@
 	<div class="row"`>
 	
 		<div class="col-sm-12">
-			<h4><b>Edit user</b></h4>
-			<div class="well">
-				<h4><%- user.username %></h4>
-				<a href="">reset password</a>
-				<hr>
-				
-				<form id="usrEditForm" class="form-horizontal" name="usrEditForm">
+			<div class="panel panel-default">
+				<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> Edit user</div>
+				<div class="panel-body">
+			
+					<h4><%- user.username %></h4>
+					<a href="">reset password</a>
+					<hr>
+					
+					<form id="usrEditForm" class="form-horizontal" name="usrEditForm">
 
-					<div class="form-group">
+						<div class="form-group">
+							
+							<div class="col-sm-6">
+								<div class="input-group">
+									<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+									<input type="text" class="form-control" placeholder="Firstname" name="firstname" value="<%-user.firstname%>">
+								</div>
+							</div>
 						
-						<div class="col-sm-6">
-							<div class="input-group">
-								<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
-								<input type="text" class="form-control" placeholder="Firstname" name="firstname" value="<%-user.firstname%>">
+							<div class="col-sm-6">
+								<div class="input-group">
+									<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
+									<input type="text" class="form-control" placeholder="Lastname" name="lastname" value="<%-user.lastname%>">
+								</div>
 							</div>
+
 						</div>
-					
-						<div class="col-sm-6">
-							<div class="input-group">
-								<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
-								<input type="text" class="form-control" placeholder="Lastname" name="lastname" value="<%-user.lastname%>">
-							</div>
+						
+
+						<div class="form-group">
+							<div class="col-sm-12">
+								<div class="input-group">
+									<div class="input-group-addon"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></div>
+									<input type="email" class="form-control" placeholder="Email" name="email" value="<%-user.email%>">
+								</div>
+							</div>	
 						</div>
 
-					</div>
-					
+						<div class="form-group">
+							<div class="col-sm-12">
+								<p><b>Birth date</b></p>
+							</div>
+							<div class="col-sm-4">
+								<div class="input-group">
+									<div class="input-group-addon">month</div>
+									<input type="text" class="form-control" name="birthMonth" value="<%-user.birthDate.getMonth() + 1%>">
+								</div>
+							</div>
+							<div class="col-sm-3">
+								<div class="input-group">
+									<div class="input-group-addon">day</div>
+									<input class="form-control" type="text" name="birthDate" value="<%- user.birthDate.getDate() %>">
+								</div>
+							</div>
+							<div class="col-sm-5">
+								<div class="input-group">
+									<div class="input-group-addon">year</div>
+									<input class="form-control" type="text" name="birthYear" value="<%- user.birthDate.getFullYear() %>">
+								</div>
+							</div>
+						</div>
+						
+						<button type="submit" class="btn btn-primary btn-block">Save</button>
 
-					<div class="form-group">
-						<div class="col-sm-12">
-							<div class="input-group">
-								<div class="input-group-addon"><span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></div>
-								<input type="email" class="form-control" placeholder="Email" name="email" value="<%-user.email%>">
-							</div>
-						</div>	
-					</div>
+					</form> 
 					
-					<!--
-					<div class="form-group">
-						<div class="col-sm-12">
-							<div class="input-group">
-							<div class="input-group-addon"><span class="glyphicon glyphicon-user" aria-hidden="true"></span></div>
-							<input type="text" class="form-control" placeholder="Username" name="username" value="<%-user.username%>">
-						</div>
-						</div>
-					</div>
-					-->
-					<!--
-					<div class="form-group">
-						<div class="col-sm-6">
-							<div class="input-group">
-								<div class="input-group-addon"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>
-							  	<input type="password" class="form-control" placeholder="Password" name="password">
-							</div>
-						</div>
-						<div class="col-sm-6">
-							<div class="input-group">
-								<div class="input-group-addon"><span class="glyphicon glyphicon-lock" aria-hidden="true"></span></div>
-							  	<input type="password" class="form-control" placeholder="Confirm password" name="passwordConfirm">
-							</div>
-						</div>
-					</div>
-				-->
+					<hr>
+					<p class="text-center"><a href="/profile">cancel</a></p>
 
-					<div class="form-group">
-						<div class="col-sm-12">
-							<p><b>Birth date</b></p>
-						</div>
-						<div class="col-sm-4">
-							<div class="input-group">
-								<div class="input-group-addon">month</div>
-								<input type="text" class="form-control" name="birthMonth" value="<%-user.birthDate.getMonth() + 1%>">
-							</div>
-						</div>
-						<div class="col-sm-3">
-							<div class="input-group">
-								<div class="input-group-addon">day</div>
-								<input class="form-control" type="text" name="birthDate" value="<%- user.birthDate.getDate() %>">
-							</div>
-						</div>
-						<div class="col-sm-5">
-							<div class="input-group">
-								<div class="input-group-addon">year</div>
-								<input class="form-control" type="text" name="birthYear" value="<%- user.birthDate.getFullYear() %>">
-							</div>
-						</div>
-					</div>
-					
-					<button type="submit" class="btn btn-primary btn-block">Save</button>
-
-				</form> 
-				
-				<hr>
-				<p class="text-center"><a href="/profile">cancel</a></p>
-
-				<div id="alertsContainer" hidden>
-					
+					<div id="alertsContainer" hidden>
+						
 				</div>
-	
+		
 			</div>
 			
 		</div>

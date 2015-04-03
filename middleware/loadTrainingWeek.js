@@ -62,10 +62,9 @@ module.exports = function(req, res, next) {
 	var today = new Date(),
 		todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate()),
 		oneDay = 24*60*60*1000,
-		weekDay = todayDate.getDay() === 0 ? 7 : todayDate.getDay(),
+		weekDay = todayDate.getDay() == 0 ? 7 : todayDate.getDay(),
 		daysFromWeekStart = oneDay * weekDay,
 		fromDay = todayDate - daysFromWeekStart;
-
 
 	log.info('Week day: ' + weekDay);
 
