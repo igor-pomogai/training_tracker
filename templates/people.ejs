@@ -65,7 +65,7 @@ $(document).ready(function() {
 				};
 
 				$.ajax({
-					url: '/addFriend',
+					url: '/friends/add',
 					method: 'POST',
 					data: {
 						userId: peopleList[userIndex]
@@ -88,7 +88,7 @@ $(document).ready(function() {
 		};	
 
 		$.ajax({
-			url: '/getPeople',
+			url: '/people/all',
 			method: 'GET',
 			success: successHandler,
 			error: errorHandler

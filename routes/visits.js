@@ -1,5 +1,5 @@
-var User = require('models/user').User;
-var Visit = require('models/visit').Visit;
+var User = require('tt/models/user').User;
+var Visit = require('tt/models/visit').Visit;
 
 exports.getVisits = function(req, res) {
 	var GYM_COEFF = 1.0;

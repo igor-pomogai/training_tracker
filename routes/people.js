@@ -1,61 +1,43 @@
-var User = require('models/user').User;
-var log = require('libs/log')(module);
+var User = require('tt/models/user').User;
+var log = require('tt/libs/log')(module);
 
-exports.getPeople = function(req, res) {
+exports.getPeople = function(req, res, next) {
 	var currentUserId = req.session.user;
 	var isFriend = false;
 	var friendsIds = [];
 	var user;
 
-	//updatePeopleWithLatestFields();
+	//updatePeopleWithLatestFields(next);
 
 	User
 		.findOne({	_id: currentUserId }, function(err, currentUser) {
-			if (err) return new Error(err);
-
-			log.info('friends: ');
-			console.log(currentUser.friends);
-
-			log.info('friends ids: ');
+			if (err) return next(err);
 			
 			currentUser.friends.forEach(function(friend) {
-				
-				console.log(friend.userId);
-
 				friendsIds.push(friend.userId);
 			});
-			
-			/*
-			currentUser.friends = [];
-			currentUser.save(function(err) {
-				if (err) res.send(err);
-			*/
-				User
-					.find({})
-					.where('_id')
-					.nin(friendsIds)
-					.exec(function(err, users) {
-						if (err) throw new Error(err);
+		
+			User
+				.find({})
+				.where('_id')
+				.nin(friendsIds)
+				.exec(function(err, users) {
+					if (err) return next(err);
 
-						var usersToSend = [];
-						for (var i = 0; i < users.length; i++) {
-							user = users[i];
-							if (user._id.equals(currentUserId)) continue;
+					var usersToSend = [];
+					for (var i = 0; i < users.length; i++) {
+						user = users[i];
+						if (user._id.equals(currentUserId)) continue;
 
-							usersToSend.push({
-								username: user.username,
-								name: user.firstname + ' ' + user.lastname,
-								userId: user._id
-							});
-						};
+						usersToSend.push({
+							username: user.username,
+							name: user.firstname + ' ' + user.lastname,
+							userId: user._id
+						});
+					};
 
-						res.json(usersToSend);
-					});
-			/*
-			});
-			*/
-
-
+					res.json(usersToSend);
+				});
 		});
 };
 
@@ -63,24 +45,23 @@ exports.get = function(req, res) {
 	res.render('people');
 };
 
-exports.addFriend = function(req, res) {
+exports.addFriend = function(req, res, next) {
 	var currentUserId = req.session.user;
 
-	User.findOne({ _id: currentUserId }, function(err, currentUser) {
-			if (err) return new Error(err);
+	User.findOne({ _id: currentUserId}, function(err, currentUser) {
+			if (err) return next(err);
+
+			if (currentUser === null) return next('not signed in');
 
 			User.findOne({
 				_id: req.body.userId
 			}, function(err, friend) {
+				if (err) return next(err);
+
 				currentUser.addFriend(friend.username, friend._id);
 
 				currentUser.save(function(err) {
-					if (err) return new Error(err);
-
-					log.info('User: ' 
-						+ currentUser.username 
-						+ ' added a friend - ' 
-						+ friend.username + '!');
+					if (err) return next(err);
 
 					res.send(true);
 				});
@@ -88,7 +69,7 @@ exports.addFriend = function(req, res) {
 		});
 };
 
-function updatePeopleWithLatestFields() {
+function updatePeopleWithLatestFields(next) {
 	User
 		.find({})
 		.exec(function(err, users) {
@@ -103,11 +84,8 @@ function updatePeopleWithLatestFields() {
 				user.set('pushWeight', []);
 
 				user.save(function(err) {
-					if (err) log.error('error updating user: ' + user,username);
-
-					log.info('user : ' + user.username + ' info updated!');
+					if (err) return next(err);
 				});
-
 			});
 		});
 }

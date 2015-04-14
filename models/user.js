@@ -1,9 +1,10 @@
 var crypto = require('crypto');
 var async = require('async');
 var util = require('util');
-var log = require('libs/log')(module);
 
-var mongoose = require('libs/mongoose'),
+var log = require('tt/libs/log')(module);
+
+var mongoose = require('tt/libs/mongoose'),
 	Schema = mongoose.Schema,
 	userGroupTypes = {
 		values: 'admin user guest'.split(' '),
@@ -65,11 +66,13 @@ var schema = new Schema({
 
 	country: {
 		type: String,
-		required: true
+		required: true,
+		default: ' '
 	},
 	city: {
 		type: String,
-		required: true
+		required: true,
+		default: ' '
 	},
 
 	weight: [new Schema({
@@ -125,7 +128,9 @@ var schema = new Schema({
 			required: true,
 			default: Date.now
 		}
-	})]
+	})],
+
+	activities: [ObjectId] //array of Activities _id
 });
 
 schema.methods.encryptPassword = function(password) {
@@ -162,7 +167,9 @@ schema.statics.authorize = function(username, password, callback) {
 			if (user) {
 				if (user.checkPassword(password)) {
 					//callback(null, user);
-					user.approved ? callback(null, user) : callback(new AuthError("Sorry. User is not approved by admin yet."));
+					user.approved ? 
+						callback(null, user) 
+						: callback(new AuthError("Sorry. User is not approved by admin yet."));
 				} else {
 					callback(new AuthError("Wrong password."));
 				}
@@ -192,13 +199,15 @@ schema.statics.register = function(data, callback) {
 					firstname: data.firstname,
 					lastname: data.lastname,
 					email: data.email,
-					birthDate: new Date(data.birthYear, data.birthMonth, data.birthDate)
+					birthDate: new Date(data.birthYear, data.birthMonth, data.birthDate),
+					country: ' ',
+					city: ' '
 				});
 
-				log.info('User registered: ' + user.username);
+				console.log('country: ' + user.country + '\ncity: ' + user.city);
 
 				user.save(function(err) {
-					if (err) return callback(err);
+					if (err) return callback(new AuthError(err));
 					
 					callback(null, "User registered succcessfully. Wait for approval to login.");
 				});	
@@ -211,11 +220,12 @@ schema.statics.register = function(data, callback) {
 exports.User = mongoose.model('User', schema);
 
 
-function AuthError(message) {
+function AuthError(message, status) {
 	Error.apply(this, arguments);
 	Error.captureStackTrace(this, AuthError);
 
 	this.message = message;
+	this.status = status || 200;
 }
 
 util.inherits(AuthError, Error);

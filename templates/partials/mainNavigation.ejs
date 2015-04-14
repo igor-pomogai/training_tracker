@@ -16,7 +16,7 @@
 				 
 				<li><a href="/personal">Dashboard</a></li>
 
-				<li><a href="/profile">Profile</a></li>
+				<li><a href="/profile?userId=<%=user._id%>">Profile</a></li>
 
 				<li><a href="/people">People</a></li>
 
@@ -87,7 +87,6 @@ $(document).ready(function() {
 		$('.top-navbar li.active').removeClass("active");
 		$(this).addClass('active');
 	});
-
 });
 
 

@@ -1,5 +1,5 @@
-var News = require('models/news').News;
-var log = require('libs/log')(module);
+var News = require('tt/models/news').News;
+var log = require('tt/libs/log')(module);
 
 module.exports = function (req, res, next) {
 	News

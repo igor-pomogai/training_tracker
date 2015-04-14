@@ -59,7 +59,7 @@
 	
 			function getAdminData() {
 				$.ajax({
-					url: '/adminGetData',
+					url: '/admin/data',
 					method: 'GET'
 				})
 				.done(function(loadedUsers) {
@@ -166,8 +166,8 @@
 				
 				$('#userInfo .remove-usr-btn').click(function() {
 					$.ajax({
-						url: '/removeUser',
-						method: 'POST',
+						url: '/users',
+						method: 'DELETE',
 						data: {
 							usrId: activeUser
 						}
@@ -184,7 +184,7 @@
 
 			function approveUser(index) {
 				$.ajax({
-					url: '/userApprove',
+					url: '/users/approve',
 					method: 'POST',
 					data: {
 						usrId: needApprUsersList[index]._id

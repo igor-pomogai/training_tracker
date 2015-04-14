@@ -65,8 +65,6 @@ $('#signUpBtn').on('click', function() {
 	window.location.href = '/register';
 });
 
-
-
 $(document.forms['login-form']).on('submit', function() {
 	var form = $(this);
 	var alertContainer = $('#alertsContainer');
@@ -84,20 +82,12 @@ $(document.forms['login-form']).on('submit', function() {
 			url: "/login",
 			method: "POST",
 			data: form.serialize(),
-			complete: function() {
-				$(":submit", form).button("reset");
+			success: function() {
+				 window.location.href = "/personal";
 			},
-			statusCode: {
-				200: function() {
-				  //form.html("Вы вошли в сайт").addClass('alert-success');
-				  //$('#loginModal').modal('hide');
-
-				  window.location.href = "/personal";
-				},
-				403: function(jqXHR) {
-					var error = JSON.parse(jqXHR.responseText);
-					generateLoginAlert(error);
-				}
+			error: function(err) {
+				var error = JSON.parse(err.responseText);
+				generateLoginAlert(error);
 			}
 		});	
     }

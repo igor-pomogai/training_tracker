@@ -1,8 +1,7 @@
-var User = require('models/user').User;
-var log = require('libs/log')(module);
+var User = require('tt/models/user').User;
+var log = require('tt/libs/log')(module);
 
 module.exports = function(req, res, next) {
-
 	req.user = res.locals.user = null;
 	
 	if (!req.session.user) return next();
@@ -12,8 +11,6 @@ module.exports = function(req, res, next) {
 
 		req.user = res.locals.user = user;
 		req.session.user = user._id;
-
-		//log.info('user exists: username= ' + req.user.username);
 
 		next();
 	});

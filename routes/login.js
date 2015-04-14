@@ -1,8 +1,9 @@
-var User = require('models/user').User;
 var async = require('async');
-var HttpError = require('error').HttpError;
-var AuthError = require('models/user').AuthError;
-var log = require('libs/log')(module);
+
+var User = require('tt/models/user').User;
+var HttpError = require('tt/error').HttpError;
+var AuthError = require('tt/models/user').AuthError;
+var log = require('tt/libs/log')(module);
 
 exports.get = function(req, res) {
 	res.render('login');
@@ -15,7 +16,7 @@ exports.post = function(req, res, next) {
 	User.authorize(username, password, function(err, user) {
 		if (err) {
 			if (err instanceof AuthError) {
-				return next(new HttpError(403, err.message));
+				return next(new AuthError(err.message, 403));
 			} else {
 				return next(err);
 			}

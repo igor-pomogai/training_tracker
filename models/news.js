@@ -1,7 +1,7 @@
 var async = require('async');
 var util = require('util');
 
-var mongoose = require('libs/mongoose'),
+var mongoose = require('tt/libs/mongoose'),
 	Schema = mongoose.Schema;
 
 var	ObjectId = mongoose.Schema.Types.ObjectId,

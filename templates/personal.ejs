@@ -272,9 +272,7 @@
 					</div>
 
 					<div id="visitsWidget" class="panel panel-default">
-						<div class="panel-heading">
-							<span class="glyphicon glyphicon-calendar"></span> Visits
-						</div>
+						
 					</div>
 
 				</div>
@@ -333,7 +331,7 @@ $(document).ready(function() {
 			var form = $(this);
 
 		    $.ajax({
-				url: "/visit",
+				url: "/visits",
 				method: "POST",
 				data: form.serialize(),
 				statusCode: {
@@ -398,7 +396,7 @@ $(document).ready(function() {
 
 	function loadLatestNews() {
 		$.ajax({
-			url: "/latestNews",
+			url: "/news/latest",
 			method: "GET"
 		})
 		.done(function(loadedNews) {
@@ -412,7 +410,7 @@ $(document).ready(function() {
 		var friendsList;
 
 		$.ajax({
-			url: "/loadFriends",
+			url: "/friends",
 			method: "GET"
 		})
 		.done(function(loadedFriends) {
@@ -458,7 +456,7 @@ $(document).ready(function() {
 
 	function loadVisitsTable() {
 		$.ajax({
-			url: "/loadVisits",
+			url: "/visits",
 			method: "GET"
 		})
 		.done(function(loadedVisits) {
@@ -470,10 +468,15 @@ $(document).ready(function() {
 	function updateVisitsTable(visitsObj) {
 		var visits = visitsObj.visitsArray;
 		var visitsWidget = $('#visitsWidget');
+		var visitsWidgetHeader = '<div class="panel-heading">'
+							+ '<span class="glyphicon glyphicon-calendar"></span> Visits'
+							+ '</div>';
 		var monthPanelBody = '<div class="panel-body">%date%</div>';
 		var visitsTable = '<table id="visitsTable" class="table table-condensed table-bordered"></table>';
 		var loadMoreLink = '<div id="loadMoreVisitsLink" class="panel-body"><a href="#">load more</a></div>';
 
+		visitsWidget.empty();
+		visitsWidget.append(visitsWidgetHeader);
 		visitsWidget.append(monthPanelBody.replace('%date%', visitsObj.date));
 		visitsWidget.append(visitsTable);
 		visitsWidget.append(loadMoreLink);

@@ -1,5 +1,5 @@
-var User = require('models/user').User;
-var log = require('libs/log')(module);
+var User = require('tt/models/user').User;
+var log = require('tt/libs/log')(module);
 
 exports.get = function(req, res) {
 	if (req.session.user) {

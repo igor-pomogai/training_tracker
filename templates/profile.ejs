@@ -32,6 +32,14 @@
 					<p><%- 'weight: in development' %></p>
 					<p><%- 'push: in development' %></p>
 					<p><%- 'arm: in development' %></p>
+
+					<hr>
+					<p><b>activities</b></p>
+
+					<form id="activitiesForm" name="activitiesForm" action="">
+						
+					</form>
+					
 				</div>
 			</div>
 		</div>
@@ -41,9 +49,18 @@
 
 <script>
 	$(document).ready(function() {
+		$('#activitiesForm').on('submit', function() {
+			$.ajax({
+				url: '/activities/',
+
+
+			})
+
+			<input type="checkbox" name="option2" value="a2">Windows 2000
+		});
 
 		$('#profileEditBtn').click(function() {
-			window.location.href = '/profileEdit';
+			window.location.href = '/profile/edit';
 		});
 	});
 

@@ -1,7 +1,7 @@
-var log = require('libs/log')(module);
-var	News = require('models/news').News;
-var User = require('models/user').User;
-var config = require('config');
+var log = require('tt/libs/log')(module);
+var	News = require('tt/models/news').News;
+var User = require('tt/models/user').User;
+var config = require('tt/config');
 
 module.exports = function(server, sessionMiddleware) {
 	var io = require('socket.io').listen(server);

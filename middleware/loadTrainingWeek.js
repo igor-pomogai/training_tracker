@@ -1,5 +1,5 @@
-var log = require('libs/log')(module);
-var Visit = require('models/visit').Visit;
+var log = require('tt/libs/log')(module);
+var Visit = require('tt/models/visit').Visit;
 
 function createTestVisits(req) {
 	var today = new Date();	

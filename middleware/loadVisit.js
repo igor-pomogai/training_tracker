@@ -1,5 +1,5 @@
-var log = require('libs/log')(module);
-var Visit = require('models/visit').Visit;
+var log = require('tt/libs/log')(module);
+var Visit = require('tt/models/visit').Visit;
 
 module.exports = function(req, res, next) {
 	req.visitedGym = res.locals.visitedGym = false;

@@ -1,13 +1,13 @@
-var User = require('models/user').User;
-var HttpError = require('error').HttpError;
-var AuthError = require('models/user').AuthError;
-var log = require('libs/log')(module);
+var User = require('tt/models/user').User;
+var HttpError = require('tt/error').HttpError;
+var AuthError = require('tt/models/user').AuthError;
+var log = require('tt/libs/log')(module);
 
 exports.get = function(req, res) {
 	res.render('register');
 };
 
-exports.post = function(req, res) {
+exports.post = function(req, res, next) {
 	log.info('registration');	
 	
 	User.register(req.body, function(err, message) {

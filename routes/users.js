@@ -1,24 +1,17 @@
-var User = require('models/user').User;
-var log = require('libs/log')(module);
+var User = require('tt/models/user').User;
+var log = require('tt/libs/log')(module);
 
-exports.get = function(req, res) {
+exports.get = function(req, res, next) {
 	var friendsIds = [];
 
 	User
 		.findOne({
 			_id: req.session.user
 		}, function(err, currentUser) {
-			if (err) return new Error(err);
+			if (err) return next(err);
 
-			log.info('friends: ');
-			console.log(currentUser.friends);
-
-			log.info('friends ids: ');
 			if (currentUser.friends.length > 0) {
 				currentUser.friends.forEach(function(friend) {
-					
-					console.log(friend.userId);
-
 					friendsIds.push(friend.userId);
 				});
 			} else {
@@ -30,7 +23,7 @@ exports.get = function(req, res) {
 				.where('_id')
 				.in(friendsIds)
 				.exec(function(err, users) {
-					if (err) throw new Error(err);
+					if (err) return next(err);
 
 					var usersToSend = [];
 					users.forEach(function(user) {
@@ -46,23 +39,21 @@ exports.get = function(req, res) {
 		});
 };
 
-exports.getById = function(req, res) {
-	console.log(req.query.userId);
+exports.getById = function(req, res, next) {
 	User
 		.findById(req.query.userId)
 		.exec(function(err, user) {
-			if (err) throw new Error(err);
-			//log.info('user found: ' + user.username);
-			console.log(user);
+			if (err) return next(err);
+
 			res.json(user);
 		});
 };
 
-exports.approve = function(req, res) {
+exports.approve = function(req, res, next) {
 	User
 		.findById(req.body.usrId)
 		.exec(function(err, user) {
-			if (err) throw new Error(err);
+			if (err) return next(err);
 
 			user.approved = true;
 
@@ -75,22 +66,22 @@ exports.approve = function(req, res) {
 		});
 };
 
-exports.remove = function(req, res) {
+exports.remove = function(req, res, next) {
 	User
 		.find({_id: req.body.usrId})
 		.remove()
 		.exec(function(err) {
-			if (err) throw new Error(err);
+			if (err) return next(err);
 
 			res.send(true);
 		});
 };
 
-exports.edit = function(req, res) {
+exports.edit = function(req, res, next) {
 	User
 		.findById(req.session.user)
 		.exec(function(err, user) {
-			if (err) throw new Error(err);
+			if (err) return next(err);
 
 			var date;
 
@@ -103,7 +94,6 @@ exports.edit = function(req, res) {
 			user.save(function(err) {
 				if (err) throw new Error(err);
 
-				log.info('user updated: ' + user.username);
 				res.send('User info updated.');
 			});
 		});	

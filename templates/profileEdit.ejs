@@ -167,8 +167,8 @@
 				},
 				submitHandler: function(form) {
 					var ajaxdata = {
-						url: "/editUser",
-						method: "POST",
+						url: "/users",
+						method: "PUT",
 						data: editForm.serialize(),
 						statusCode: {
 							200: function(data) {
