@@ -1,9 +1,9 @@
-var User = require('models/user').User;
-var log = require('libs/log')(module);
-var ObjectId = mongoose.Schema.Types.ObjectId;
+var User = require('tt/models/user').User;
+var log = require('tt/libs/log')(module);
 
-var mongoose = require('libs/mongoose'),
+var mongoose = require('tt/libs/mongoose'),
 	Schema = mongoose.Schema,
+	ObjectId = mongoose.Schema.Types.ObjectId;
 
 var schema = new Schema({
 	title: {
@@ -23,38 +23,41 @@ var schema = new Schema({
 
 schema.statics.createActivities = function(callback) {
 	var Activity = this;
-	var userSavedCallback = function(err) {
-		if (err) return callback(err);
-		
-	};
 
 	var activityPool = new Activity({
 		title: 'pool',
 		coeff: 0.5,
 		approved: true
 	});
-	activityPool.save(userSavedCallback);
-
-	var activityRun = new Activity({
-		title: 'run',
-		coeff: 0.5,
-		approved: true
-	});
-	activityRun.save(userSavedCallback);
-
-	var activityGym = new Activity({
-		title: 'gym',
-		coeff: 1.0,
-		approved: true
-	});
-	activityGym.save(userSavedCallback);
-
-	var activityPool = new Activity({
-		title: 'pool',
-		coeff: 0.5,
-		approved: true
-	});
-	activityPool.save(userSavedCallback);
+	activityPool.save(function() {
+		var activityRun = new Activity({
+			title: 'run',
+			coeff: 0.5,
+			approved: true
+		});
+		activityRun.save(function() {
+			var activityGym = new Activity({
+				title: 'gym',
+				coeff: 1.0,
+				approved: true
+			});
+			activityGym.save(function() {
+				var activityPool = new Activity({
+					title: 'pool',
+					coeff: 0.5,
+					approved: true
+				});
+				activityPool.save(function() {
+					var activityFootball = new Activity({
+						title: 'football',
+						coeff: 1.0,
+						approved: true
+					});
+					activityFootball.save(callback);
+				});
+			});
+		});
+	});		
 };
 
 exports.Activity = mongoose.model('Activity', schema);

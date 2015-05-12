@@ -12,8 +12,8 @@ module.exports = function(app) {
 	app.get('/visits', require('./visits').getVisits);
 	app.post('/visits', require('./personal').post);	
 
-	app.get('/profile', checkAuth, require('./profile').render);
-	app.get('/profile/edit', checkAuth, require('./profile').edit);
+	app.get('/profile/:userId', checkAuth, require('./profile').render);
+	app.get('/profile/:userId/edit', checkAuth, require('./profile').edit);
 
 	app.get('/login', require('./login').get);
 	app.post('/login', require('./login').post);
@@ -26,6 +26,17 @@ module.exports = function(app) {
 	app.post('/users/approve', checkAuth, require('./users').approve);
 	app.put('/users', checkAuth, require('./users').edit);
 	app.delete('/users', checkAuth, require('./users').remove);
+	
+	app.delete('/visits/:userId/:activityId', require('./users').removeVisit);
+	app.get('/visits/:userId', require('./users').get);
+	app.post('/visits/:userId', require('./users').addVisits);
+	
+	app.get('users/:userId/visits/month', require('./users').getVisitsForMonth);
+	app.get('users/:userId/visits/period', require('./users').getVisitsForPeriod);
+
+	//app.get('users/:userId/friends', require('./users').getForMonth);
+
+	app.get('/users/:userId', checkAuth, require('./users').getById)
 
 	app.get('/people', checkAuth, require('./people').get);
 	app.get('/people/all', checkAuth, require('./people').getPeople);
@@ -37,4 +48,9 @@ module.exports = function(app) {
 	app.get('/admin', checkAuth, require('./admin').get);
 	app.get('/admin/data', checkAuth, require('./admin').getData);
 	
+	app.get('/activities/:userId', checkAuth, require('./activities').getByUser);	
+	app.post('/activities/:userId', checkAuth, require('./activities').saveByUser);	
+	app.post('/activities/:userId/:activityId', checkAuth, require('./activities').removeByUser);	
+	app.get('/activities/', checkAuth, require('./activities').getAll);
+	app.post('/activities/', checkAuth, require('./activities').createNew);	
 };

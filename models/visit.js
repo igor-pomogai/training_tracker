@@ -50,7 +50,8 @@ var visitSchema = new Schema({
 	created:  {
 		type: Date,
 		default: Date.now
-	}
+	},
+	activity: ObjectId
 });
 
 visitSchema.index({userId: 1, visitDate: 1}, { unique: true});

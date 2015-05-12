@@ -105,7 +105,7 @@ module.exports = function(req, res, next) {
 			if (err) return next(err);
 
 			log.info('loaded visits: ' + visits.length);
-			console.log(visits);
+			//console.log(visits);
 
 			// fill weekArray with FALSE
 			var weekArray =[

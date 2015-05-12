@@ -5,42 +5,42 @@
 		<div class="col-sm-12">
 			<div class="panel panel-default">
 				<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> User details</div>
-				<div class="panel-body">
-					<h4><%- selectedUser.firstname + ' ' + selectedUser.lastname %></h4>
 
-					<% if (canEdit) { %> <button class="btn btn-primary btn-xs" id="profileEditBtn">Edit</button> <% } %>
+				<div class="panel-body">
+					
+					<h4 id="nameLabel"></h4>
+
+					<button class="btn btn-primary btn-xs" id="profileEditBtn" hidden>Edit</button>
 					<hr>
 					
 					<p><b>account info</b></p>
 
-					<p><%- 'username: ' + selectedUser.username %></p>
-					<p><%- 'email: ' + selectedUser.email %></p>
-					<p><%- 'birthdate: ' %>
-						<% 	var date = selectedUser.birthDate;
-							var formatedDateString = ((date.getDate() < 10) ? '0' + date.getDate() : date.getDate()) + '.'
-								+ ((date.getMonth() < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) + '.' +
-								+ date.getFullYear();
-						 %>
-
-						<%- formatedDateString %> 
-
-					</p>
+					<p id="usernameLabel">username: </p>
+					<p id="emailLabel">email: </p>
+					<p id="birthdateLabel">birthdate: </p>
 
 					<br>
 					<p><b>body info</b></p>
 
-					<p><%- 'weight: in development' %></p>
-					<p><%- 'push: in development' %></p>
-					<p><%- 'arm: in development' %></p>
+					<p>weight: in development</p>
+					<p>push: in development</p>
+					<p>arm: in development</p>
 
 					<hr>
-					<p><b>activities</b></p>
+					<p><b>my activities</b></p>
 
-					<form id="activitiesForm" name="activitiesForm" action="">
+					<ul id="userActivitiesList">
 						
+					</ul>
+
+					<p id="otherActivitiesLabel" hidden><b>other available activities</b></p>
+
+					<form id="activitiesForm" name="activitiesForm" hidden>
+						<button type="submit" class="btn btn-success btn-xs">SAVE</button>
 					</form>
-					
+
 				</div>
+
 			</div>
 		</div>
 	</div>
@@ -49,19 +49,161 @@
 
 <script>
 	$(document).ready(function() {
+		var currentUser = '<%=user._id%>';
+		var userId = '<%=selectedUser%>';
+		
+		loadUser(userId);
+
 		$('#activitiesForm').on('submit', function() {
+			var form = $(this);
+
 			$.ajax({
-				url: '/activities/',
+				url: '/activities/' + userId,
+				method: 'POST',
+				data: {
+					formData: form.serialize()
+				},
+				success: function(res) {
+					console.log("ACTIVITIES SAVED!");
+					window.location.reload();
+				}
+			});
 
-
-			})
-
-			<input type="checkbox" name="option2" value="a2">Windows 2000
+			return false;
 		});
 
 		$('#profileEditBtn').click(function() {
-			window.location.href = '/profile/edit';
+			window.location.href = '/profile/' + userId + '/edit';
 		});
+
+		function loadActivities(user) {
+			var userActivities = user.activities !== undefined ? user.activities : [];
+
+			var filterUserActivities = function(activities) {
+				var newUserActivities = [];
+				
+				userActivities.forEach(function(act) {
+				
+					for (var i = 0; i < activities.length; i++) {
+				
+						if (activities[i]._id == act.actId) {
+							//var itemsArray = activities.splice(i, 1);
+							activities.splice(i, 1);
+							//newUserActivities.push(itemsArray[0]);
+							break;
+						}	
+				
+					}
+				
+				});
+				//return {
+				//	user: newUserActivities,
+				//	available: activities
+				//};
+				return newUserActivities;
+			};
+
+			$.ajax({
+				url: '/activities/',
+				method: 'GET',
+				success: function(activities) {
+					
+					//var filteredActivities = filterUserActivities(activities);
+					filterUserActivities(activities);
+
+					//filteredActivities['available'].forEach(function(activity) {
+					activities.forEach(function(activity) {
+						var item = '<div class="checkbox">'
+								+ '<label>'
+									+ '<input type="checkbox" value="' 
+									+ activity._id + '" '
+									+ 'name="' + activity.title + '">' 
+									+ activity.title
+								+ '</label>'
+							+ '</div>';
+
+						$('#activitiesForm').prepend(item);
+					});
+
+					userActivities.forEach(function(activity) {
+						var userActivityListItem = '<li>' + activity.title;
+						var removeBtn = ' <a href="/activities/'
+							+ userId
+							+ '/'
+							+ activity.actId 
+							+ '" class="actRemoveBtn">[remove]</a>';
+							
+
+						$('#userActivitiesList')
+							.append(
+								userActivityListItem 
+								+ (currentUser == userId ? removeBtn : '')
+							);
+
+					});
+					
+					$('.actRemoveBtn').click(function(e) {
+						e.preventDefault();
+						var selectedItem = this;
+						$.post($(selectedItem).attr('href'), function(data) {
+							console.log('success remove activity!');
+
+							console.log($(selectedItem));
+							console.log($(selectedItem).parent());
+
+							//$(selectedItem).parent().remove();
+
+							//$(this).parent().hide();
+							window.location.reload();
+						});
+
+					});
+					
+				}
+			});
+		}
+
+		function loadUser(id) {
+
+			$.ajax({
+				url: '/users/' + id,
+				method: 'GET',
+				success: function(user) {
+					initUser(user);
+					loadActivities(user);
+				}
+			});
+
+			return false;
+		}
+
+		function initUser(user) {
+			
+			var date = new Date(user.birthDate);
+			var formatedDateString = ((date.getDate() < 10) ? '0' + date.getDate() : date.getDate()) 
+				+ '.' 
+				+ ((date.getMonth() < 10) ? '0' + (date.getMonth() + 1) : (date.getMonth() + 1)) 
+				+ '.' 
+				+ date.getFullYear();
+
+
+			$('#nameLabel').html('<h4>' + user.firstname + ' ' + user.lastname + '</h4>');
+			
+			if (currentUser == userId) {
+				$('#profileEditBtn').show();
+				$('#otherActivitiesLabel').show();
+				$('#activitiesForm').show();
+			} else {
+				$('#profileEditBtn').hide();
+				$('#otherActivitiesLabel').hide();
+				$('#activitiesForm').hide();
+			}
+
+			$('#usernameLabel').append(user.username);
+			$('#emailLabel').append(user.email);
+			$('#birthdateLabel').append(formatedDateString);
+		} 
+
 	});
 
 </script>

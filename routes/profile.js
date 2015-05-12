@@ -4,12 +4,25 @@ var HttpError = require('tt/error').HttpError;
 
 exports.render = function(req, res, next) {
 	log.info('get profile page.');
+	var userId = req.params.userId;
 
-	if (req.query.userId) {
-		log.info('open profile page with user: ' + req.query.userId);
-		console.log(req.query.userId);
+	User.findOne({ _id: userId}, function(err, user) {
+		if (err) return next(err);
+
+		if (!user) return next(new HttpError(404, 'User doesn\'t exist!'));
+
+		res.render('profile', {
+			selectedUser: userId
+		});
+	});
+
+/*	
+
+	if (userId) {
+		log.info('open profile page with user: ' + userId);
+		console.log(userId);
 		User
-			.findById(req.query.userId)
+			.findById(userId)
 			.exec(function(err, user) {
 				if (err) return next(new HttpError(500, err.message));
 				
@@ -31,6 +44,7 @@ exports.render = function(req, res, next) {
 			selectedUser: req.user
 		});
 	}
+*/
 	
 };
 

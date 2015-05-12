@@ -2,6 +2,7 @@ var News = require('tt/models/news').News;
 var log = require('tt/libs/log')(module);
 
 exports.getLatest = function(req, res, next) {
+
 	News
 		.find({})
 		.limit(10)
@@ -21,4 +22,5 @@ exports.getLatest = function(req, res, next) {
 			req.session.topNews = res.locals.topNews = newsToSend;
 			res.json(newsToSend);
 		});
+
 };

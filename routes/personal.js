@@ -1,7 +1,8 @@
 var HttpError = require('tt/error').HttpError,
 	Visit = require('tt/models/visit').Visit,
 	News = require('tt/models/news').News,
-	log = require('tt/libs/log')(module);
+	log = require('tt/libs/log')(module),
+	User = require('tt/models/user').User;
 
 exports.get = function(req, res) {
 	res.render('personal');
