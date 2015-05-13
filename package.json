@@ -1,0 +1,12 @@
+{
+	"name" : "training-tracker",
+	"version" : "0.0.1",
+	"description" : "The project for tracking your trainings.",
+	"main" : "app.js",
+	"author" : "Igor Pomogai",
+	"dependencies" : {
+		"express" : "*",
+		"ejs" : "*",
+		"mongoose" : "*"
+	}
+}

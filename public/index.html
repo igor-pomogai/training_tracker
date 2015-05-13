@@ -1,16 +1,77 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="trackerApp">
+
 <head>
 	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<link rel="stylesheet" type="text/css" href="/assets/vendor/bower_components/bootstrap/dist/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/assets/css/app.css">
+
+	<script src="/assets/vendor/bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="/assets/vendor/bower_components/jquery-validation/dist/jquery.validate.min.js"></script>
+	<script src="/assets/vendor/bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+	<script src="/assets/vendor/bower_components/angular/angular.min.js"></script>
+	<script src="/assets/vendor/bower_components/angular-route/angular-route.min.js"></script>
+
 	<title>Training Tracker</title>
 </head>
-<body>
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-12">
-				<h1>angular page</h1>
+
+<body ng-controller="trackerCtrl">
+
+	<nav class="navbar navbar-default">
+
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navigationBar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
 			</div>
+			<div class="collapse navbar-collapse">
+				
+				<ul class="nav navbar-nav top-navbar">
+					
+					<li ng-class="navClass('dashboard')">
+						<a href='' ng-click="loadDashboard()">Dashboard</a>
+					</li>
+
+					<li ng-class="navClass('profile')">
+						<a href='' ng-click="loadProfile()">Profile</a>
+					</li>
+
+					<li ng-class="navClass('people')">
+						<a href='' ng-click="loadPeople()">People</a>
+					</li>
+
+					<li ng-class="navClass('admin')">
+						<a href='' ng-click="loadAdmin()"><b>[admin panel]</b></a>
+					</li>		
+
+				</ul>
+
+				<div class="navbar-right">
+
+					<p class="navbar-text">Hi user</p>
+
+					<button id="logoutBtn" type="button" class="btn btn-default navbar-btn">Log out</button>
+
+				</div>
+
+			</div>
+
 		</div>
-	</div>
+	</nav>
+
+	<div ng-view></div>
+
+	<script src="app/components/dashboard/dashboardCtrl.js"></script>
+	<script src="app/components/profile/profileCtrl.js"></script>
+	<script src="app/components/people/peopleCtrl.js"></script>
+	<script src="app/components/admin/adminCtrl.js"></script>
+	<script src="app/app.module.js"></script>
 </body>
+
 </html>
