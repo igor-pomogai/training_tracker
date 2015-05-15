@@ -1,9 +1,12 @@
 var trackerApp = angular.module('trackerApp', [
 		'ngRoute', 
 		'trackerApp.dashboardCtrl',
+		'trackerApp.dashboardService',
 		'trackerApp.profileCtrl',
+		'trackerApp.profileService',
 		'trackerApp.peopleCtrl',
-		'trackerApp.adminCtrl'
+		'trackerApp.adminCtrl',
+		'trackerApp.twoStateListCtrl'
 	])
 
 	.config(function($routeProvider, $locationProvider, $httpProvider) {

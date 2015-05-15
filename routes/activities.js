@@ -114,7 +114,7 @@ exports.getAll = function(req, res, next) {
 		.exec(function(err, activities) {
 			if (err) return next(err);
 			
-			res.send(activities);
+			res.json(activities);
 		});
 };
 

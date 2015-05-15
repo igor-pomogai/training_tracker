@@ -1,9 +1,55 @@
 <div class="container" >
+
 	<div class="row">
 		<div class="col-sm-12">
-			<h1>Dashboard</h1>
-			<hr>
-			<h3>{{text}}</h3>
+			<div class="alert alert-info" role="alert">
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<strong>Welcome</strong> to personal training tracker. Get ready to competition.
+				<ul>
+					<li>Use control panel to save your trainings.</li>
+					<li><strong>"Your hard week"</strong> will display the badges for each your training on a week table.</li>
+					<li><strong>"News"</strong> will display the visits and other usefull tweets from system and your friends.</li>
+					<li><strong>"Points"</strong> table will reflect results of your friends and will show you who is the leader.</li>
+				</ul>
+			</div>
 		</div>
+	</div>
+
+	<div class="row" id="dashboardPage" >
+		
+		<div class="col-md-3 col-sm-4 col-sm-offset-0 col-xs-12" id="personalWidget">
+			
+			<div class="panel panel-primary">
+				
+				<div class="panel-heading">
+					<span class="glyphicon glyphicon-user"></span> Control panel
+				</div>
+				
+				<div class="panel-body">
+
+					<div>
+						<button class="btn btn-success btn-block" ng-click="getUser('dayaram')">
+							get user		
+						</button>
+					</div>
+
+					
+					<h5><b> {{ user.firstname + ' ' + user.lastname }} </b></h5>
+					<hr>
+					
+					<h5> {{ todayDate }} </h5>
+					<hr>
+					
+					<two-state-list 
+						list="activities"
+						listlbl="'Add visit'"
+						slistlbl="'Visited today'"
+						savefn="saveVisits()"
+						removefn="removeVisit(id)">
+					</two-state-list>
+
+				</div>		
+			</div>
+
 	</div>
 </div>

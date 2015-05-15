@@ -1,0 +1,34 @@
+<h5> {{ sListLabel }} </h5>
+
+<ul>
+	<li ng-repeat="activity in list | filter:filterSavedList">
+		{{ activity.title }}
+		<a href="" id="visitRemoveBtn" ng-click="remove(activity)">[remove]</a>
+	</li>
+</ul>
+
+<h5> {{ listLabel }} </h5>
+
+<form style="font-size: 16px;" name="activitiesForm">
+	
+	<div class="checkbox" ng-repeat="activity in list | filter:filterList">
+		<label>
+			<input type="checkbox" name="{{ activity.title }}" value="{{ activity.id }}" ng-model="activity.selected">
+			{{ activity.title }}
+		</label>
+	</div>
+
+	<div>
+		<button type="submit" class="btn btn-primary btn-block" ng-click="save()">
+			Save		
+		</button>
+	</div>
+	
+</form>
+
+<hr>
+
+<div id="successSaveAlert" class="alert alert-success  alert-dismissible" role="alert" hidden>
+	<button hidden type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	SUCCESS! 
+</div>

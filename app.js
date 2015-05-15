@@ -85,8 +85,8 @@ app.use(sessionMiddleware);
 /*
  * routes
  */
- app.use('/', serveStatic(path.join(__dirname, 'public'), {}));
-//require('tt/routes')(app);
+app.use('/', serveStatic(path.join(__dirname, 'public'), {}));
+require('tt/routes')(app);
 
 /*
  * error handling

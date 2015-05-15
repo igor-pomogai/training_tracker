@@ -1,9 +1,54 @@
-<div class="container" >
-	<div class="row">
+<div class="container">
+	<div class="row" id="profilePage">
 		<div class="col-sm-12">
-			<h1>Profile</h1>
-			<hr>
-			<h3>{{text}}</h3>
+			<div class="panel panel-default">
+				<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> User details</div>
+
+				<div class="panel-body">
+					
+					<h4 id="nameLabel"></h4>
+
+					<button class="btn btn-primary btn-xs" id="profileEditBtn" hidden>Edit</button>
+					<hr>
+					
+					<p><b>account info</b></p>
+
+					<p>username: {{ user.username }}</p>
+					<p>email: {{ user.email }}</p>
+					<p>birthdate: {{ user.birthdate }}</p>
+
+					<br>
+					<p><b>body info</b></p>
+
+					<p>weight: in development</p>
+					<p>push: in development</p>
+					<p>arm: in development</p>
+
+					<two-state-list 
+						list="activities"
+						listlbl="'Select an activity'"
+						slistlbl="'Your activities'"
+						savefn="saveActivities()"
+						removefn="removeActivity()">
+					</two-state-list>
+
+					<hr>
+					<p><b>my activities</b></p>
+
+					<ul id="userActivitiesList">
+						
+					</ul>
+
+					<p id="otherActivitiesLabel" hidden><b>other available activities</b></p>
+
+					<form id="activitiesForm" name="activitiesForm" hidden>
+						<button type="submit" class="btn btn-success btn-xs">SAVE</button>
+					</form>
+
+				</div>
+
+			</div>
 		</div>
 	</div>
+
 </div>

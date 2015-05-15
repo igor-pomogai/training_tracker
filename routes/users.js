@@ -59,6 +59,45 @@ exports.getById = function(req, res, next) {
 		});
 };
 
+exports.getByName = function(req, res, next) {
+	var name = req.params.name;
+	
+	log.info('get user by id: ' + name);
+
+	User
+		.find({username: name})
+		.exec(function(err, user) {
+			if (err) return next(err);
+
+			if (user) log.info('user found: ' + user.username);
+
+			res.json(user);
+			
+		});
+};
+
+exports.getActivityByUser = function(req, res, next) {
+
+};
+
+exports.setUserActivity = function(req, res, next) {
+	var activities = req.body.activities,
+		userId = req.params.userId;
+
+	res.json(req.body);
+
+};
+
+exports.removeUserActivity = function(req, res, next) {
+
+};
+
+
+/*
+ * Old api
+ */
+
+
 exports.approve = function(req, res, next) {
 	User
 		.findById(req.body.usrId)

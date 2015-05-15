@@ -5,8 +5,23 @@ var loadNews = require('tt/middleware/loadNews');
 
 module.exports = function(app) {
 	
-	app.get('/', require('./frontpage').get);
+	/*
+	 * API
+	 */
+	app.get('/users/:userId', checkAuth, require('./users').getById);
+	app.get('/users/name/:name', require('./users').getByName); //just for development! 
+	
+	app.get('/users/:userId/activities', require('./users').getActivityByUser);
+	app.post('/users/:userId/activities', require('./users').setUserActivity);
+	app.delete('/users/:userId/activities', require('./users').removeUserActivity);
+	
+	app.get('/activities', require('./activities').getAll);
 
+
+
+/*
+	app.get('/', require('./frontpage').get);
+	
 	app.get('/personal', checkAuth, loadVisit, loadTrainingWeek, require('./personal').get);
 
 	app.get('/visits', require('./visits').getVisits);
@@ -36,8 +51,6 @@ module.exports = function(app) {
 
 	//app.get('users/:userId/friends', require('./users').getForMonth);
 
-	app.get('/users/:userId', checkAuth, require('./users').getById)
-
 	app.get('/people', checkAuth, require('./people').get);
 	app.get('/people/all', checkAuth, require('./people').getPeople);
 	app.post('/friends/add', checkAuth, require('./people').addFriend);
@@ -51,6 +64,8 @@ module.exports = function(app) {
 	app.get('/activities/:userId', checkAuth, require('./activities').getByUser);	
 	app.post('/activities/:userId', checkAuth, require('./activities').saveByUser);	
 	app.post('/activities/:userId/:activityId', checkAuth, require('./activities').removeByUser);	
-	app.get('/activities/', checkAuth, require('./activities').getAll);
+	
 	app.post('/activities/', checkAuth, require('./activities').createNew);	
+*/
+
 };
