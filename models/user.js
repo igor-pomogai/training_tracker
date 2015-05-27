@@ -162,7 +162,7 @@ var schema = new Schema({
 	}], 
 
 	/**
-	 * List of user activity visiting
+	 * List of user activity visits
 	 */
 	visits: [{
 		created: {
@@ -209,7 +209,7 @@ schema.statics.addVisits = function(userId, visitsArray, callback) {
 
 		visitsArray.forEach(function(visit) {
 			var today = new Date(),	
-				todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
+				todayDate = today.setHours(0, 0, 0, 0);
 			
 			var visitObj = {
 				activityId: visit,
@@ -244,16 +244,14 @@ schema.statics.removeVisit = function(userId, activityId, callback) {
 
 			if (!user.visits[i].activityId.equals(activityId)) continue;
 
-			console.log(user.visits);
+			//console.log(user.visits);
 
 			user.visits.splice(i, 1);
 
 			user.save(function(err) {
 				if (err) return callback(err);
 
-				console.log(user.visits);
-
-				callback(null);
+				return callback(null);
 			});
 
 			break;
@@ -311,12 +309,10 @@ schema.statics.register = function(data, callback) {
 				});
 				user.userGroup.push({});
 
-				console.log('country: ' + user.country + '\ncity: ' + user.city);
-
 				user.save(function(err) {
 					if (err) return callback(new AuthError(err));
 					
-					callback(null, "User registered succcessfully. Wait for approval to login.");
+					callback(null, user);
 				});	
 			}
 		}

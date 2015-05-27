@@ -13,26 +13,28 @@ angular.module('trackerApp.dashboardCtrl', [])
 
 			DashboardService.getUserByName('dayaram', function(data) {
 				
-				$scope.user = data[0];
+				$scope.user = data;
 
 				$scope.activities = formatActivities($scope.user.activities);
 
-				console.log($scope.user);
-
 				activitiesFromVisits = getActivitiesFromVisits($scope.user.visits);
 
-				console.log($scope.activities);
-				console.log(activitiesFromVisits);
+				$scope.activities.forEach(function(activity) {
+					for (var i = 0; i < activitiesFromVisits.length; i++) {
+						if (activitiesFromVisits[i].id == activity.id ) {
+							activity.saved = activity.selected = true;
+						}
+					}
+				});
 
 			});
 
 			function getActivitiesFromVisits(visits) {
 				
-				var today = new Date(),	
-					//todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+				var today = new Date(),
 					activities = [];
 
-				today.setHours(0);
+				today.setHours(0, 0, 0, 0);
 
 				for (var i = 0; i < visits.length; i++) {
 
@@ -41,7 +43,7 @@ angular.module('trackerApp.dashboardCtrl', [])
 					if (visitDate.getTime() !== today.getTime()) continue;
 
 					activities.push({
-						id: visits[i].actId
+						id: visits[i].activityId
 					});
 
 				}
@@ -60,7 +62,7 @@ angular.module('trackerApp.dashboardCtrl', [])
 					
 					formattedActivities.push({
 						title: activities[i].title,
-						id: activities[i]._id,
+						id: activities[i].actId,
 						selected: false,
 						saved: false
 					});
@@ -69,59 +71,39 @@ angular.module('trackerApp.dashboardCtrl', [])
 
 				return formattedActivities;
 
-			}
+			}	
 
-		
-		
-/*
-		$scope.visitedActivities = [
-			
-			{
-				title: 'pool',
-				id: 3,
-				selected: false
-			},
-			{
-				title: 'run',
-				id: 4,
-				selected: false
-			},
-			{
-				title: 'gym',
-				id: 5,
-				selected: false
-			}
+			$scope.saveVisits = function(selectedArray) {
 
-		];
+				DashboardService.saveVisits($scope.user._id, selectedArray, function(result) {
+					if (result) { 
+						console.log('Save visits success.');
+					} else {
+						console.log('ERROR. Save visits failed.');
+					}
+				});
 
+			};
 
-		$scope.activities = [
-			{
-				title: 'footbal',
-				id: 1,
-				selected: false
-			},
-			{
-				title: 'box',
-				id: 2,
-				selected: false
-			}
-		];
-*/
+			$scope.removeVisit = function(activityId) {
 
-		$scope.saveVisits = function() {
-			//make http post request
-		};
+				DashboardService.removeVisit($scope.user._id, activityId, function(result) {
+					if (result) { 
+						console.log('Remove visit success.');
+					} else {
+						console.log('ERROR. Remove visit failed.');
+					}
+				});
 
-		$scope.removeVisit = function(id) {
-			//make http post request
-		};
+			};
 
-		$scope.getUser = function(name) {
-			DashboardService.getUserByName('dayaram', function(data) {
-				console.log(data);
-			});
-		};
+			$scope.getUser = function(name) {
+
+				DashboardService.getUserByName('dayaram', function(data) {
+					console.log(data);
+				});
+
+			};
 
 	}]);
 

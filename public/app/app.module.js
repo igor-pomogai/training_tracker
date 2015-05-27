@@ -6,7 +6,14 @@ var trackerApp = angular.module('trackerApp', [
 		'trackerApp.profileService',
 		'trackerApp.peopleCtrl',
 		'trackerApp.adminCtrl',
-		'trackerApp.twoStateListCtrl'
+		'trackerApp.adminService',
+		'trackerApp.twoStateListCtrl',
+		'trackerApp.registrationComponent',
+		'trackerApp.registrationService',
+		'trackerApp.userListComponent',
+		'trackerApp.userListService',
+		'trackerApp.activitiesListComponent',
+		'trackerApp.activitiesListService'
 	])
 
 	.config(function($routeProvider, $locationProvider, $httpProvider) {
@@ -15,8 +22,12 @@ var trackerApp = angular.module('trackerApp', [
 			.when('/dashboard',	{
 				templateUrl: 'app/components/dashboard/dashboardView.html',
 				controller: 'dashboardCtrl'
-			}) 
+			})
 			.when('/profile', {
+				templateUrl: 'app/components/profile/profileView.html',
+				controller: 'profileCtrl'	
+			}) 
+			.when('/profile/:userId', {
 				templateUrl: 'app/components/profile/profileView.html',
 				controller: 'profileCtrl'	
 			})

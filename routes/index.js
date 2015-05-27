@@ -8,14 +8,47 @@ module.exports = function(app) {
 	/*
 	 * API
 	 */
-	app.get('/users/:userId', checkAuth, require('./users').getById);
-	app.get('/users/name/:name', require('./users').getByName); //just for development! 
+
+	/*
+	 * Operations with user
+	 */
+	app.get(
+		'/users', 
+		require('./users').getAll);
+	app.get(
+		'/users/:userId', 
+		require('./users').getById);
+	app.get(
+		'/users/name/:name', 
+		require('./users').getByName); //just for development! 
+	app.post(
+		'/users',
+		require('./users').registerUser);
 	
-	app.get('/users/:userId/activities', require('./users').getActivityByUser);
-	app.post('/users/:userId/activities', require('./users').setUserActivity);
-	app.delete('/users/:userId/activities', require('./users').removeUserActivity);
+	app.get(
+		'/users/:userId/activities', 
+		require('./users').getActivityByUser);
+	app.post(
+		'/users/:userId/activities', 
+		require('./users').setUserActivities);
+	app.delete(
+		'/users/:userId/activities/:activityId', 
+		require('./users').removeUserActivity);
 	
-	app.get('/activities', require('./activities').getAll);
+	app.post(
+		'/users/:userId/visits', 
+		require('./users').saveVisits);
+	app.delete(
+		'/users/:userId/visits/:activityId', 
+		require('./users').removeVisit);
+	
+	/*
+	 * Operations with activities
+	 */	
+	app.get(
+		'/activities', 
+		require('./activities').getAll);
+
 
 
 

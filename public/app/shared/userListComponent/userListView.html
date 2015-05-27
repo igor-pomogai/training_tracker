@@ -1,0 +1,11 @@
+<ul class="list-group">
+  <li class="list-group-item" ng-repeat="user in users">
+  	{{ user.firstname + ' ' + user.lastname }}
+  	<span class="pull-right">
+  		<button class="btn btn-xs btn-info">info</button>
+        <button class="btn btn-xs btn-warning">
+          <span class="glyphicon glyphicon-trash"></span>
+        </button>
+  	</span>
+  </li>
+</ul>

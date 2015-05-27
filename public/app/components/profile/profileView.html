@@ -1,6 +1,13 @@
 <div class="container">
-	<div class="row" id="profilePage">
+	<div class="row">
 		<div class="col-sm-12">
+			<h3>Profile page</h3>
+			<hr>
+		</div>
+	</div>
+
+	<div class="row" id="profilePage">
+		<div class="col-sm-6">
 			<div class="panel panel-default">
 				<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> User details</div>
 
@@ -23,27 +30,19 @@
 					<p>weight: in development</p>
 					<p>push: in development</p>
 					<p>arm: in development</p>
-
-					<two-state-list 
-						list="activities"
-						listlbl="'Select an activity'"
-						slistlbl="'Your activities'"
-						savefn="saveActivities()"
-						removefn="removeActivity()">
-					</two-state-list>
-
-					<hr>
-					<p><b>my activities</b></p>
-
-					<ul id="userActivitiesList">
+					
+					<div class="well">
 						
-					</ul>
-
-					<p id="otherActivitiesLabel" hidden><b>other available activities</b></p>
-
-					<form id="activitiesForm" name="activitiesForm" hidden>
-						<button type="submit" class="btn btn-success btn-xs">SAVE</button>
-					</form>
+						<two-state-list 
+							list="activities"
+							listlbl="'Select an activity'"
+							slistlbl="'Your activities'"
+							savefn="saveActivities(selectedArray)"
+							removefn="removeActivity(id)">
+						</two-state-list>
+						
+					</div>
+					
 
 				</div>
 

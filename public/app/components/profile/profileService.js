@@ -24,11 +24,18 @@ angular.module('trackerApp.profileService', [])
 					});
 			},
 
-			setUserActivities: function(usrId, activities, callback) {
-				$http.post('/user/' + usrId + '/activities', 
+			saveNewActivities: function(usrId, activities, callback) {
+				$http.post('/users/' + usrId + '/activities', 
 					{
 						activities: activities
 					})
+					.success(function(data) {
+						callback(data);
+					});
+			},
+
+			removeActivity: function(usrId, activityId, callback) {
+				$http.delete('/users/' + usrId + '/activities/' + activityId)
 					.success(function(data) {
 						callback(data);
 					});

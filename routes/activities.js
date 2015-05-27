@@ -112,7 +112,7 @@ exports.getAll = function(req, res, next) {
 	Activity
 		.find()
 		.exec(function(err, activities) {
-			if (err) return next(err);
+			if (err) return res.json(false);
 			
 			res.json(activities);
 		});

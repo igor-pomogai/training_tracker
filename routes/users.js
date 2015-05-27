@@ -2,43 +2,13 @@ var User = require('tt/models/user').User;
 var log = require('tt/libs/log')(module);
 var async = require('async');
 
-//remove this in a while
-exports.get = function(req, res, next) {
-	var friendsIds = [];
-
+exports.getAll = function(req, res) {
 	User
-		.findOne({
-			_id: req.session.user
-		}, 
-		function(err, currentUser) {
-			if (err) return next(err);
+		.find({})
+		.exec(function(err, users) {
+			if (err) return res.json(false);
 
-			if (currentUser.friends.length > 0) {
-				currentUser.friends.forEach(function(friend) {
-					friendsIds.push(friend.userId);
-				});
-			} else {
-				log.info('sorry, ' + currentUser.username + ' you have no friends yet :( ');
-			}
-
-			User
-				.find({})
-				.where('_id')
-				.in(friendsIds)
-				.exec(function(err, users) {
-					if (err) return next(err);
-
-					var usersToSend = [];
-					users.forEach(function(user) {
-						if (!user._id.equals(req.session.user)) {
-							usersToSend.push({
-								username: user.username,
-								userId: user._id
-							});
-						}
-					});
-					res.json(usersToSend);
-				});
+			res.json(users);
 		});
 };
 
@@ -66,10 +36,20 @@ exports.getByName = function(req, res, next) {
 
 	User
 		.find({username: name})
-		.exec(function(err, user) {
+		.exec(function(err, result) {
 			if (err) return next(err);
 
+			var user = result[0];
+
 			if (user) log.info('user found: ' + user.username);
+
+			/*user.visits = [];
+
+			user.save(function(err) {
+				if (err) return res.json(false);
+
+				res.json(user);
+			});*/
 
 			res.json(user);
 			
@@ -80,15 +60,92 @@ exports.getActivityByUser = function(req, res, next) {
 
 };
 
-exports.setUserActivity = function(req, res, next) {
+exports.setUserActivities = function(req, res, next) {
 	var activities = req.body.activities,
 		userId = req.params.userId;
 
-	res.json(req.body);
+	User.findById(userId)
+		.exec(function(err, user) {
+			if (err) return next(err);
+
+			if (activities === undefined) return res.json(false);
+
+			for (var i = 0; i < activities.length; i++) {
+				user.activities.push({
+					actId: activities[i].id,
+					title: activities[i].title
+				});
+			}
+
+			user.save(function(err) {
+				if (err) return res.json(false);
+
+				res.json(true);
+			});
+
+		});
 
 };
 
 exports.removeUserActivity = function(req, res, next) {
+	var userId = req.params.userId,
+		activityId = req.params.activityId;
+
+	User.findById(userId, function(err, user) {
+		if (err) return res.json(false);
+
+		for (var i = 0; i < user.activities.length; i++) {
+			if (user.activities[i].actId.equals(activityId)) {
+				user.activities.splice(i, 1);
+				break;
+			}
+		}
+
+		user.save(function(err) {
+			if (err) return res.json(false);
+
+			res.json(true);
+		});
+	});
+};
+
+exports.saveVisits = function(req, res) {	
+	var userId = req.params.userId;
+	var activities = req.body.activities;
+
+	User.addVisits(userId, activities, function(err) {
+		if (err) return res.json(false);
+
+		res.json(true);
+	});
+
+};
+
+exports.removeVisit = function(req, res) {
+	var userId = req.params.userId;
+	var activityId = req.params.activityId;
+
+	log.info('remove visit (from server)');
+
+	User.removeVisit(userId, activityId, function(err) {
+		if (err) return res.json(false);
+
+		res.json(true);
+	});
+
+};
+
+exports.registerUser = function(req, res) {
+
+	log.info('registration');	
+
+	var user = req.body.user;
+	
+	User.register(user, function(err, registeredUser) {
+		if (err) return res.json(false);
+
+		res.json(registeredUser);
+	});
 
 };
 
@@ -148,63 +205,42 @@ exports.edit = function(req, res, next) {
 		});	
 };
 
-exports.addVisits = function(req, res, next) {
-	var userId = req.params.userId,
-		newActivities = [],	
-		i,
-		vars;
+//remove this in a while
+/*exports.get = function(req, res, next) {
+	var friendsIds = [];
 
-	console.log(req.body.formData);
+	User
+		.findOne({
+			_id: req.session.user
+		}, 
+		function(err, currentUser) {
+			if (err) return next(err);
 
+			if (currentUser.friends.length > 0) {
+				currentUser.friends.forEach(function(friend) {
+					friendsIds.push(friend.userId);
+				});
+			} else {
+				log.info('sorry, ' + currentUser.username + ' you have no friends yet :( ');
+			}
 
-	if (req.body && req.body.formData) {
+			User
+				.find({})
+				.where('_id')
+				.in(friendsIds)
+				.exec(function(err, users) {
+					if (err) return next(err);
 
-		var vars = req.body.formData.split("&");
-		
-		for (i = 0; i < vars.length; i++) {
-			var pair = vars[i].split("=");
-			newActivities.push(pair[1]);
-		}
-
-	}
-
-	User.addVisits(userId, newActivities, function(err) {
-		if (err) return next(err);
-
-		res.send(true); //maybe send something more usefull
-	});
-
-};
-
-exports.removeVisit = function(req, res, next) {
-	var userId = req.params.userId,
-		activityId = req.params.activityId;
-
-	console.log('removing: ' + activityId);
-
-	User.removeVisit(userId, activityId, function(err) {
-		if (err) return next(err);
-
-		res.send(true);
-	});
-
-};
-
-exports.getVisits = function(req, res, next) {
-
-};
-
-exports.getVisitsForMonth = function(req, res, next) {
-	var userId = req.params.userId,
-		today = new Date(),	
-		todayDate = new Date(today.getFullYear(), today.getMonth(), today.getDate());
-
-	'/users/:userId/friends/visits'
-
-
-};
-
-exports.getVisitsForPeriod = function(req, res, next) {
-	var userId = req.params.userId;	
-
-};
+					var usersToSend = [];
+					users.forEach(function(user) {
+						if (!user._id.equals(req.session.user)) {
+							usersToSend.push({
+								username: user.username,
+								userId: user._id
+							});
+						}
+					});
+					res.json(usersToSend);
+				});
+		});
+};*/

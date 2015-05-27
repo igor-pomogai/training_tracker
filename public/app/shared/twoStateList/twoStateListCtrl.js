@@ -37,9 +37,15 @@ angular.module('trackerApp.twoStateListCtrl', [])
 
 					for (var i = 0; i < selectedArray.length; i++) {
 						selectedArray[i].saved = true;
+						selectedArray[i].selected = false;
 					}
-
-					scope.savefn();
+					
+					console.log('selected array: ');
+					console.log(selectedArray);
+					
+					scope.savefn({
+						selectedArray: selectedArray
+					});
 				};
 
 				scope.remove = function(activity) {
@@ -47,8 +53,10 @@ angular.module('trackerApp.twoStateListCtrl', [])
 					activity.selected = false;
 					activity.saved = false;
 					
-					scope.removefn({id: id});
-					
+					scope.removefn({
+						id: activity.id
+					});
+
 				};
 
 			}
