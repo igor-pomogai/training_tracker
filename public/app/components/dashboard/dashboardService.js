@@ -18,6 +18,15 @@ angular.module('trackerApp.dashboardService', [])
 
 			},
 
+			getFriends: function(userId, callback) {
+
+				$http.get('/users/' + userId + '/friends')
+					.success(function(data) {
+						callback(data);
+					});
+
+			},
+
 			saveVisits: function(userId, activities, callback) {
 				
 				var activitiesIds = [];
@@ -48,6 +57,24 @@ angular.module('trackerApp.dashboardService', [])
 					});
 
 				console.log('endpoint for removing visit called.');
+
+			},
+
+			generateVisits: function(callback) {
+
+				$http.post('/users/visits/generate')
+					.success(function(data) {
+						callback(data);
+					});
+
+			},
+
+			getAllActivities: function(callback) {
+
+				$http.get('/activities')
+					.success(function(data) {
+						callback(data);
+					});
 
 			}
 

@@ -1,11 +1,49 @@
-<ul class="list-group">
-  <li class="list-group-item" ng-repeat="user in users">
-  	{{ user.firstname + ' ' + user.lastname }}
-  	<span class="pull-right">
-  		<button class="btn btn-xs btn-info">info</button>
-        <button class="btn btn-xs btn-warning">
-          <span class="glyphicon glyphicon-trash"></span>
-        </button>
-  	</span>
-  </li>
-</ul>
+<div class="row">
+		
+	<div class="col-sm-5">
+
+		<div class="panel panel-primary">
+		
+			<div class="panel-heading">
+				Users List
+			</div>
+
+
+			<ul class="list-group">
+			  	<li class="list-group-item" ng-repeat="user in users">
+				  	{{ user.firstname + ' ' + user.lastname }}
+				  	<span class="pull-right">
+				  		<button class="btn btn-xs btn-info" ng-click="selectUser(user)">info</button>
+				        <button class="btn btn-xs btn-warning">
+				          <span class="glyphicon glyphicon-trash"></span>
+				        </button>
+				  	</span>
+			  	</li>
+			</ul>
+
+		</div>
+
+	</div>
+
+	<div class="col-sm-7">
+
+		<div class="panel panel-primary">
+		
+			<div class="panel-heading">
+				Details
+			</div>
+
+			<div class="panel-body">
+					<button class="btn btn-xs btn-info btn-block">clear</button>
+					<hr>
+					<p>username: {{ selectedUser.username }}</p>
+					<p>email: {{ selectedUser.email }}</p>
+					<p>birthdate: {{ selectedUser.birthDate }}</p>
+			</div>
+
+		</div>
+
+	</div>
+
+
+</div>

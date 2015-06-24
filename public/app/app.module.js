@@ -13,7 +13,12 @@ var trackerApp = angular.module('trackerApp', [
 		'trackerApp.userListComponent',
 		'trackerApp.userListService',
 		'trackerApp.activitiesListComponent',
-		'trackerApp.activitiesListService'
+		'trackerApp.activitiesListService',
+		'trackerApp.addActivityService',
+		'trackerApp.addActivityComponent',
+		'trackerApp.visitsSummaryService',
+		'trackerApp.visitsSummaryComponent',
+		'trackerApp.friendsListComponent'
 	])
 
 	.config(function($routeProvider, $locationProvider, $httpProvider) {

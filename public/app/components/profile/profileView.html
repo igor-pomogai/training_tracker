@@ -1,53 +1,76 @@
-<div class="container">
-	<div class="row">
+<article class="container">
+
+	<section class="row">
 		<div class="col-sm-12">
-			<h3>Profile page</h3>
-			<hr>
+			<img src="http://placehold.it/150x150" alt="" style="float: left; margin-right: 20px;">
+			<h4>{{ user.firstname + ' ' + user.lastname }}</h4>
+			<p><span class="label label-success">online</span></p>
+			<p><i>"lorem ipsum"</i></p>
 		</div>
-	</div>
+	</section>
+<hr>
 
-	<div class="row" id="profilePage">
-		<div class="col-sm-6">
+	<section class="row">
+		
+		<div class="col-sm-8">
 			<div class="panel panel-default">
-				<div class="panel-heading"><span class="glyphicon glyphicon-th-list"></span> User details</div>
-
+			
+				<div class="panel-heading">Info</div>
+			
 				<div class="panel-body">
+					
+
+					<p><b>Actions</b></p>
+					<div class="btn-group">
+						<button class="btn btn-primary" id="profileEditBtn">Edit</button>
+						<button class="btn btn-success" id="profileEditBtn">Some button</button>
+						<button class="btn btn-info" id="profileEditBtn" >Some button</button>
+						<button class="btn btn-warning" id="profileEditBtn" >Some button</button>
+					</div>
+					<hr>
 					
 					<h4 id="nameLabel"></h4>
 
-					<button class="btn btn-primary btn-xs" id="profileEditBtn" hidden>Edit</button>
-					<hr>
-					
-					<p><b>account info</b></p>
+					<p><b>Account info</b></p>
 
 					<p>username: {{ user.username }}</p>
 					<p>email: {{ user.email }}</p>
 					<p>birthdate: {{ user.birthdate }}</p>
 
 					<br>
-					<p><b>body info</b></p>
+					<p><b>Body info</b></p>
 
 					<p>weight: in development</p>
 					<p>push: in development</p>
 					<p>arm: in development</p>
+				</div>
+			</div>
+				
+		</div>
+
+		<div class="col-sm-4">
+			
+			<div class="panel panel-default">
+			
+				<div class="panel-heading">Select activities</div>
+			
+				<div class="panel-body">
 					
-					<div class="well">
-						
-						<two-state-list 
-							list="activities"
-							listlbl="'Select an activity'"
-							slistlbl="'Your activities'"
-							savefn="saveActivities(selectedArray)"
-							removefn="removeActivity(id)">
-						</two-state-list>
-						
-					</div>
-					
+					<two-state-list 
+						list="activities"
+						listlbl="'Select an activity'"
+						slistlbl="'Your activities'"
+						savefn="saveActivities(selectedArray)"
+						removefn="removeActivity(id)">
+					</two-state-list>	
 
 				</div>
-
+				
 			</div>
+			
 		</div>
-	</div>
 
-</div>
+	</section>
+
+
+</article>

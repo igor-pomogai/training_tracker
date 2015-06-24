@@ -60,4 +60,19 @@ schema.statics.createActivities = function(callback) {
 	});		
 };
 
+schema.statics.addActivity = function(data, callback) {
+	var Activity = this;
+
+	var activity = new Activity({
+		title: data.title,
+		coeff: data.coeff
+	});
+
+	activity.save(function(err) {
+		if (err) return callback(null);
+
+		callback(activity);
+	});
+};
+
 exports.Activity = mongoose.model('Activity', schema);

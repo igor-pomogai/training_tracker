@@ -2,6 +2,89 @@ var Activity = require('tt/models/activity').Activity,
 	User = require('tt/models/user').User,
 	log = require('tt/libs/log')(module);
 
+exports.getAll = function(req, res) {
+	
+	Activity
+		.find()
+		.exec(function(err, activities) {
+			if (err) return res.json(false);
+			
+			res.json(activities);
+		});
+
+};
+
+exports.insertActivity = function(req, res) {
+	var activity = req.body.activity;
+
+	Activity
+		.findOne({title: activity.title})
+		.exec(function(err, result) {
+			if (err) return res.json(false);
+			
+			console.log(result);
+
+			if (result) return res.json(false);
+
+			var newActivity = new Activity({
+				title: activity.title,
+				coeff: activity.coef,
+				approved: false
+			});
+
+			Activity.addActivity(newActivity, function(activity) {
+				if (activity == null) return res.json(false);
+
+				console.log(activity);
+
+				res.json(activity);
+			});
+
+		});
+
+};
+
+exports.removeActivity = function(req, res) {
+	var activityId = req.params.activityId;
+
+	Activity
+		.find({_id: activityId})
+		.remove()
+		.exec(function(err, result) {
+			console.log(result);
+
+			res.json(result);
+		});
+};
+
+exports.approveActivity = function(req, res) {
+	var activityId = req.params.activityId;
+
+	Activity
+		.findById(activityId)
+		.exec(function(err, activity) {
+			if (err) return res.json(false);
+
+			if (!activity) return res.json(false);
+
+			activity.approved = true;
+
+			activity.save(function(err) {
+
+				res.json(true);
+
+			});
+			
+		});
+};
+
+
+
+
+/*
+ * OLD API (remove in future commits)
+ */
+
 exports.getByUser = function(req, res, next) {
 	var userId = req.params.userId,
 		activitiesArray = [];
@@ -106,26 +189,4 @@ exports.saveByUser = function(req, res, next) {
 		}
 		
 	});
-};
-
-exports.getAll = function(req, res, next) {
-	Activity
-		.find()
-		.exec(function(err, activities) {
-			if (err) return res.json(false);
-			
-			res.json(activities);
-		});
-};
-
-exports.createNew = function(req, res, next) {
-
-	Activity
-		.find({title: req.body.title})
-		.exec(function(err, activities) {
-			if (err) return next(err);
-			if (!activities) return;
-
-			res.send(activities);
-		});
 };

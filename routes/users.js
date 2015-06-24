@@ -1,4 +1,5 @@
 var User = require('tt/models/user').User;
+var Activity = require('tt/models/activity').Activity;
 var log = require('tt/libs/log')(module);
 var async = require('async');
 
@@ -29,7 +30,7 @@ exports.getById = function(req, res, next) {
 		});
 };
 
-exports.getByName = function(req, res, next) {
+exports.getByName = function(req, res) {
 	var name = req.params.name;
 	
 	log.info('get user by id: ' + name);
@@ -37,7 +38,7 @@ exports.getByName = function(req, res, next) {
 	User
 		.find({username: name})
 		.exec(function(err, result) {
-			if (err) return next(err);
+			if (err) return res.json(false);
 
 			var user = result[0];
 
@@ -55,6 +56,129 @@ exports.getByName = function(req, res, next) {
 			
 		});
 };
+
+exports.getFriends = function(req, res) {
+	var userId = req.params.userId;
+
+	User.findOne({_id: userId})
+		.exec(function(err, user) {
+			if (err) return res.json(false);
+
+			var ids = [];
+
+			console.log(userId);
+
+			user.friends.forEach(function(friend) {
+				ids.push(friend.userId);
+			});
+
+			console.log(ids);
+
+			User
+				.where('_id').in(ids)
+				.exec(function(err, people) {
+					if (err) return res.json(false);
+
+					console.log(people);
+
+					res.json(people);
+				});
+
+		});
+
+};
+
+exports.generateTestVisits = function(req, res) {
+	
+	User.find({})
+		.exec(function(err, users) {
+			if (err) res.json(false);
+
+			console.log('generating test visits..');
+			console.log('-users found: ' + users.length);
+
+			Activity.find({})
+				.exec(function(err, activities) {
+					if (err) res.json(false);
+
+					console.log('-activities found: ' + activities.length);
+
+					async.each(
+						users, 
+						function(user, callback) {
+
+							console.log('--working with user: ' + user.username);
+
+							console.log('---checking if user have activities..');
+
+							if (user.activities.length == 0) {
+
+								console.log('---no activities found, will generate');
+
+								for (var j = 0; j < activities.length; j++) {
+									user.activities.push({
+										actId: activities[j]._id,
+										title: activities[j].title
+									});
+								}
+
+							} else {
+								console.log('---user have activities');
+							}
+
+							for (var i = 0; i < 10; i++) {
+								var today = new Date(),
+									monthStart = new Date();
+
+								monthStart.setDate(1);
+								monthStart.setHours(0,0,0,0);
+
+								console.log('---generating random date..');
+								console.log('---today [' + +today + ' ms]: ' + today);
+								console.log('---month start [' + +monthStart + ' ms]: ' + monthStart);
+
+								var randomDateTimestamp = Math.floor(
+										Math.random() 
+										* (+today - +monthStart) 
+										+ +monthStart
+									);
+								var randomDate = new Date(randomDateTimestamp);
+
+								console.log('---random date: ' + randomDate);
+
+								var randomActivityIndex = Math.floor(Math.random() * user.activities.length);
+
+								console.log('---random activity ID: ' + user.activities[randomActivityIndex]._id);
+
+								var visitObj = {
+									activityId: user.activities[randomActivityIndex].actId,
+									visitDate: randomDate
+								};
+
+								user.visits.push(visitObj);
+								
+							}
+
+							user.save(function(err) {
+								if (err) return callback(err);
+
+								callback();
+							});
+
+						},
+						function(err) {
+							if (err) res.json(false);
+
+							console.log('finished!');
+
+							res.json(users);
+						});
+				});
+
+			
+		});
+};
+
 
 exports.getActivityByUser = function(req, res, next) {
 

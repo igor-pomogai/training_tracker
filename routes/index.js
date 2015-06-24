@@ -41,6 +41,14 @@ module.exports = function(app) {
 	app.delete(
 		'/users/:userId/visits/:activityId', 
 		require('./users').removeVisit);
+
+	app.get(
+		'/users/:userId/friends',
+		require('./users').getFriends);
+
+	app.post(
+		'/users/visits/generate',
+		require('./users').generateTestVisits); //just for development
 	
 	/*
 	 * Operations with activities
@@ -48,7 +56,12 @@ module.exports = function(app) {
 	app.get(
 		'/activities', 
 		require('./activities').getAll);
-
+	app.post(
+		'/activities', 
+		require('./activities').insertActivity);
+	app.delete(
+		'/activities/:activityId', 
+		require('./activities').removeActivity);
 
 
 

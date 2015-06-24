@@ -12,6 +12,16 @@ angular.module('trackerApp.activitiesListService', [])
 					.success(function(activities) {
 						callback(activities);
 					});
+
+			},
+
+			removeActivity: function(id, callback) {
+
+				$http.delete('/activities/' + id)
+					.success(function(result) {
+						callback(result);
+					});
+
 			}
 
 		};

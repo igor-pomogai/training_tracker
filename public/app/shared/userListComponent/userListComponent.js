@@ -17,11 +17,19 @@ angular.module('trackerApp.userListComponent', [])
 				
 				scope.users = scope.usersList;
 
+				scope.selectedUser = undefined;
+
+
 				/*
 				UserListService.getAllUsers(function(users) {
 					scope.users = users;
 				});
 				*/
+
+				scope.selectUser = function(user) {
+					scope.selectedUser = user;
+					console.log(user._id);
+				};
 			}
 		};	
 	}]);

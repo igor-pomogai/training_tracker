@@ -1,0 +1,20 @@
+<section ng-repeat="month in visits">
+	
+	<div class="panel-body"><b>{{ month.title }}</b></div>
+
+	<ul class="list-group" ng-repeat="sport in month.data">
+		
+		<li class="list-group-item list-group-item-info"> {{sport.title}} </li>
+
+		<li class="list-group-item">
+			<ul class="list-group">
+				<li class="list-group-item" ng-repeat="user in sport.users">
+					{{user.username}}
+					<span class="badge">{{user.result}}</span>
+				</li>
+			</ul>
+		</li>
+
+	</ul>
+
+</section>

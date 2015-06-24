@@ -47,6 +47,8 @@ angular.module('trackerApp.registrationComponent', [])
 
 							scope.usersList.push(registeredUser);
 
+							initFields();
+
 						} else {
 							console.log('ERROR. User registration failed.');
 						}
@@ -61,6 +63,16 @@ angular.module('trackerApp.registrationComponent', [])
 				var checkConfirmPassword = function () {
 					return true;
 				};
+
+				var initFields = function() {
+					scope.firstname = '';
+					scope.lastname = '';
+					scope.email = 'example@tracker.com';
+					scope.username = '';
+					scope.birthday = today.getDate();
+					scope.birthyear = today.getFullYear();
+					scope.birthmonth = today.getMonth();
+				}
 
 
 			}

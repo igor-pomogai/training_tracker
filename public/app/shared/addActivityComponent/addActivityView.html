@@ -1,0 +1,17 @@
+<form id="registerForm" class="form-horizontal" name="registerForm" >
+
+	<div class="form-group">
+		
+		<div class="col-sm-6">
+			<input type="text" class="form-control" placeholder="Title" name="activity-title" ng-model="activity.title" required>
+		</div>
+	
+		<div class="col-sm-6">
+			<input type="number" step="0.5" class="form-control" placeholder="Coefficient" name="coef" ng-model="activity.coef" required>
+		</div>
+
+	</div>
+
+	<button type="submit" class="btn btn-success btn-block" ng-click="addActivity()">Add</button>
+
+</form> 

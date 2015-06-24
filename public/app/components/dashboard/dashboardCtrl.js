@@ -5,13 +5,17 @@ angular.module('trackerApp.dashboardCtrl', [])
 	.controller('dashboardCtrl', 
 		['$scope', 'DashboardService', function($scope, DashboardService) {
 
-			var activitiesFromVisits;
+			var activitiesFromVisits, 
+				allActivities = [];
 
 			$scope.user = {};
 			$scope.activities = [];
 			$scope.todayDate = new Date();
+			$scope.visitsSummary = [];
 
 			DashboardService.getUserByName('dayaram', function(data) {
+				
+				updateVisitsSummary();
 				
 				$scope.user = data;
 
@@ -28,6 +32,115 @@ angular.module('trackerApp.dashboardCtrl', [])
 				});
 
 			});
+
+			function updateVisitsSummary() {
+
+				DashboardService.getAllActivities(function(activities) {
+
+					allActivities = activities;
+
+					console.log('activities loaded: ' + activities.length);
+
+					DashboardService.getFriends($scope.user._id, function(friends) {
+
+						console.log('friends loaded: ' + friends.length);
+
+						$scope.visitsSummary = [
+							{
+								title: 'June, 2015',
+								data: {}
+							}
+						];
+
+						//TODO IP:  change to ONLY SELECTED TO SHOW activities in future
+						allActivities.forEach(function(activity) {
+							
+							$scope.visitsSummary[0].data[activity._id] = {
+								show: true,
+								title : activity.title,
+								users : {}
+							};
+
+						});
+
+						var today = new Date(),
+									monthStart = new Date();
+
+						monthStart.setDate(1);
+						monthStart.setHours(0,0,0,0);
+
+						today.setHours(23, 59, 59, 0);
+
+						console.log('filtering visits between [' + monthStart + '] and [' + today + ']');
+						
+						friends.forEach(function(friend) {
+
+							console.log('-processing user: ' + friend.username);
+							console.log('--number of visits: ' + friend.visits.length);
+
+							// TODO IP: think on how to minimize amount of iterations
+							friend.visits.forEach(function(visit) {
+
+								/*
+								 * 1) check if visit date is between NOW and MONTH BEGINING
+								 * 2) find <activityType> in visitsSummary.data array, 
+								 * 		if NOT EXISTS - add
+								 * 3) check if this user already exists in 
+								 * 		visitsSummary.data.<activityType> array,
+								 * 		if NO - add
+								 * 4) increment 'result' property
+							 	 */ 
+
+							 	var visitDate = new Date(visit.visitDate);
+							 	var isFromCurrentMonth = (+visitDate >= +monthStart && +visitDate <= +today);
+
+							 	console.log('---current visit date: ' + visit.visitDate);
+							 	console.log('---is it from current month: ' + isFromCurrentMonth);
+							 	//console.log('----today timestamp: ' + +today);
+							 	//console.log('----month begining timestamp: ' + +monthStart);
+							 	//console.log('----visit timestamp: ' + +new Date(visit.visitDate) );
+							 	 
+								if (isFromCurrentMonth) {
+									console.log(visit.activityId);
+									console.log($scope.visitsSummary[0].data);
+
+									console.log('activity is in list: ' + (visit.activityId in $scope.visitsSummary[0].data));
+
+									if (visit.activityId in $scope.visitsSummary[0].data) {
+
+										if (!(friend._id in $scope.visitsSummary[0].data[visit.activityId].users)) {
+
+											$scope.visitsSummary[0].data[visit.activityId].users[friend._id] = {
+												username: friend.username,
+												result: 0
+											};
+
+										}
+
+										$scope.visitsSummary[0].data[visit.activityId].users[friend._id].result++; 
+
+									} else {
+										
+										$scope.visitsSummary[0].data[visit.activityId] = {
+											show: true,
+											title : activity.title,
+											users : {}
+										};
+
+									}
+
+								}
+
+							});
+
+						});
+
+						console.log($scope.visitsSummary);
+
+					});
+
+				});
+			}
 
 			function getActivitiesFromVisits(visits) {
 				
@@ -101,6 +214,18 @@ angular.module('trackerApp.dashboardCtrl', [])
 
 				DashboardService.getUserByName('dayaram', function(data) {
 					console.log(data);
+				});
+
+			};
+
+			$scope.generateVisits = function() {
+
+				DashboardService.generateVisits(function(data) {
+					
+					console.log(data);
+					
+					updateVisitsSummary();
+					
 				});
 
 			};

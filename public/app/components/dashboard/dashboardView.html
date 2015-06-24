@@ -7,9 +7,6 @@
 				<strong>Welcome</strong> to personal training tracker. Get ready to competition.
 				<ul>
 					<li>Use control panel to save your trainings.</li>
-					<li><strong>"Your hard week"</strong> will display the badges for each your training on a week table.</li>
-					<li><strong>"News"</strong> will display the visits and other usefull tweets from system and your friends.</li>
-					<li><strong>"Points"</strong> table will reflect results of your friends and will show you who is the leader.</li>
 				</ul>
 			</div>
 		</div>
@@ -17,20 +14,27 @@
 
 	<div class="row" id="dashboardPage" >
 		
-		<div class="col-md-3 col-sm-4 col-sm-offset-0 col-xs-12" id="personalWidget">
+		<div class="col-md-3 col-sm-4" id="personalWidget">
 			
 			<div class="panel panel-primary">
 				
 				<div class="panel-heading">
-					<span class="glyphicon glyphicon-user"></span> Control panel
+					<!--<span class="glyphicon glyphicon-user"></span> -->
+					Control panel
 				</div>
 				
 				<div class="panel-body">
 
-					<div>
+					<div >
 						<button class="btn btn-success btn-block" ng-click="getUser('dayaram')">
 							get user		
 						</button>
+
+						<button class="btn btn-warning btn-block" ng-click="generateVisits()" >
+							generate visits for users		
+						</button>
+
+						<hr>
 					</div>
 
 					
@@ -51,5 +55,20 @@
 				</div>		
 			</div>
 
+			<friends-list users="user.friends"> </friends-list>
+
+		</div>
+
+		<div class="col-md-6 col-sm-8">
+			<div class="panel panel-primary">
+				
+				<div class="panel-heading">Visits summary</div>
+						
+				<visits-summary visits="visitsSummary"></visits-summary>
+
+			</div>
+		</div>
+
 	</div>
+
 </div>
