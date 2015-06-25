@@ -13,7 +13,7 @@
 	<section class="row">
 		
 		<div class="col-sm-8">
-			<div class="panel panel-default">
+			<div class="panel panel-info">
 			
 				<div class="panel-heading">Info</div>
 			
@@ -21,12 +21,12 @@
 					
 
 					<p><b>Actions</b></p>
-					<div class="btn-group">
-						<button class="btn btn-primary" id="profileEditBtn">Edit</button>
-						<button class="btn btn-success" id="profileEditBtn">Some button</button>
-						<button class="btn btn-info" id="profileEditBtn" >Some button</button>
-						<button class="btn btn-warning" id="profileEditBtn" >Some button</button>
-					</div>
+
+					<button class="btn btn-xs btn-primary" id="profileEditBtn">Edit</button>
+					<button class="btn btn-xs btn-success" id="profileEditBtn">Add to friends</button>
+					<button class="btn btn-xs btn-info" id="profileEditBtn">Write message</button>
+					<button class="btn btn-xs btn-danger" id="profileEditBtn">Remove from friends</button>
+
 					<hr>
 					
 					<h4 id="nameLabel"></h4>
@@ -48,9 +48,9 @@
 				
 		</div>
 
-		<div class="col-sm-4">
+		<div class="col-sm-4" ng-if="isYou">
 			
-			<div class="panel panel-default">
+			<div class="panel panel-info">
 			
 				<div class="panel-heading">Select activities</div>
 			

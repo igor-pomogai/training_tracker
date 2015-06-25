@@ -5,6 +5,10 @@ angular.module('trackerApp.profileCtrl', [])
 
 			$scope.activities = [];
 			$scope.userId = $routeParams.userId || null;
+
+			$scope.isYou = true; //test approach [learn how to do it corect!]
+
+			console.log('from profile controller. userId: ' + $scope.userId);
 			
 			$scope.saveActivities = function(selectedArray) {
 
@@ -38,44 +42,70 @@ angular.module('trackerApp.profileCtrl', [])
 
 			};
 
-			
-			ProfileService.getUserByName('dayaram', function(user) {
+			if ($scope.userId !== null) {
+
+				$scope.isYou = false;
 				
-				$scope.user = user;
+				ProfileService.getUserById($scope.userId, function(user) {
 
-				ProfileService.getActivities(function(data) {
+					console.log('user returned from server: ' + user._id);
 
-					var saved = false;
+					$scope.user = user;
 
-					console.log('all activities:');
-					console.log(data);
-
-					for (var i = 0; i < data.length; i++) {
-
-						saved = false;
-
-						for (var j = 0; j < $scope.user.activities.length; j++) {
-
-							if ($scope.user.activities[j].actId == data[i]._id) {
-								
-								saved = true;
-								
-								break;
-							}
-
-						}
-
-						$scope.activities.push({
-							title: data[i].title,
-							id: data[i]._id,
-							selected: false,
-							saved: saved
-						});
-
-					}
+					getActivities();
 
 				});
 
-			});
+			} else {
+
+				$scope.isYou = true;
+				
+				ProfileService.getUserByName('dayaram', function(user) {
+				
+					$scope.user = user;
+
+					getActivities();
+
+				});
+			}
+
+			var getActivities = function() {
+				ProfileService.getActivities(function(data) {
+
+						var saved = false;
+
+						console.log('all activities:');
+						console.log(data);
+
+						for (var i = 0; i < data.length; i++) {
+
+							saved = false;
+
+							for (var j = 0; j < $scope.user.activities.length; j++) {
+
+								if ($scope.user.activities[j].actId == data[i]._id) {
+									
+									saved = true;
+									
+									break;
+								}
+
+							}
+
+							$scope.activities.push({
+								title: data[i].title,
+								id: data[i]._id,
+								selected: false,
+								saved: saved
+							});
+
+						}
+
+						console.log('activities ready');
+
+					});
+			};
+			
+			
 
 	}]);

@@ -45,6 +45,15 @@ module.exports = function(app) {
 	app.get(
 		'/users/:userId/friends',
 		require('./users').getFriends);
+	app.post(
+		'/users/:userId/friends/:friendId',
+		require('./users').addFriend);
+	app.delete(
+		'/users/:userId/friends/:friendId',
+		require('./users').removeFriend);
+	app.put(
+		'/users/:userId/friends/:friendId',
+		require('./users').acceptRequest);
 
 	app.post(
 		'/users/visits/generate',

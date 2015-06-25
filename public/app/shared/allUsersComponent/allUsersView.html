@@ -1,0 +1,26 @@
+<div class="col-sm-4" id="peopleSearchPanel">
+	<div class="panel panel-warning">
+		<div class="panel-heading">Search</div>
+		<div class="panel-body">search</div>
+	</div>
+</div>
+
+<div class="col-sm-8" id="peopleListPanel">
+	<div class="panel panel-warning">
+		<div class="panel-heading">People list</div>
+
+			<div class="list-group">
+				<div class="list-group-item" ng-repeat="user in users" style="overflow: hidden">
+					{{user.firstname + ' ' + user.lastname}} 
+					<span style="color: orange;">{{' [' + user.username + ']'}}</span>
+
+					<span class="pull-right">
+				  		<button class="btn btn-xs btn-info" ng-click="viewUser(user._id)">info</button>
+				  		<button class="btn btn-xs btn-success" 
+				  			ng-click="addFriend(user)"
+				  			ng-if="!user.friend">make friend</button>
+				  	</span>
+				</div>
+			</div>
+	</div>
+</div>

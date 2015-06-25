@@ -88,6 +88,94 @@ exports.getFriends = function(req, res) {
 
 };
 
+exports.addFriend = function(req, res) {
+	var userId = req.params.userId;
+	var friendId = req.params.friendId;
+
+	console.log('Adding friend.');
+
+	User.findOne({_id: userId})
+		.exec(function(err, user) {
+			if (err) res.json(false);
+
+			console.log('user found: ' + user.username);
+
+			User.findOne({_id: friendId})
+				.exec(function(err, friend) {
+					if (err) res.json(false);
+
+					console.log('friend found: ' + friend.username);
+
+					user.addFriend(friend.username, friend._id, false);
+					console.log('friend added to user: ' + user.username);
+					friend.addFriend(user.username, user._id, true);
+					console.log('friend request sent to: ' + friend.username);
+
+					user.save(function(err) {
+						if (err) res.json(false);
+
+						console.log('friend save success');
+
+						friend.save(function(err) {
+							if (err) res.json(false);
+							
+							console.log('friend request send success');
+
+							res.json(true);
+						});
+					});
+
+				});
+		});
+};
+
+exports.removeFriend = function(req, res) {
+	var userId = req.params.userId;
+	var friendId = req.params.friendId;
+
+	User.findOne({_id: userId})
+		.exec(function(err, user) {
+			if (err) res.json(false);
+
+			for (var i = 0; i < user.friends.length; i++) {
+				if (user.friends[i].userId !== friendId) continue;
+
+				user.friends[i].splice(i, 1); break;
+			}
+
+			User.findOne({_id: friendId})
+				.exec(function(err, friend) {
+					if (err) res.json(false);
+
+					for (var i = 0; i < friend.friends.length; i++) {
+						if (friend.friends[i].userId !== userId) continue;
+
+						friend.friends[i].splice(i, 1); break;
+					}
+
+					user.save(function(err) {
+						if (err) res.json(false);
+
+						friend.save(function(err) {
+							if (err) res.json(false);
+
+							res.json(true);
+						});
+
+					});
+
+				});
+
+		});
+};
+
+exports.acceptRequest = function(req, res) {
+	var userId = req.params.userId;
+	var friendId = req.params.friendId;
+
+
+};
+
 exports.generateTestVisits = function(req, res) {
 	
 	User.find({})
@@ -278,7 +366,7 @@ exports.registerUser = function(req, res) {
  * Old api
  */
 
-
+/*
 exports.approve = function(req, res, next) {
 	User
 		.findById(req.body.usrId)
@@ -329,8 +417,7 @@ exports.edit = function(req, res, next) {
 		});	
 };
 
-//remove this in a while
-/*exports.get = function(req, res, next) {
+exports.get = function(req, res, next) {
 	var friendsIds = [];
 
 	User
@@ -367,4 +454,5 @@ exports.edit = function(req, res, next) {
 					res.json(usersToSend);
 				});
 		});
-};*/
+};
+*/

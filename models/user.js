@@ -53,7 +53,12 @@ var schema = new Schema({
 	 */
 	friends: [{
 		username: String,
-		userId: ObjectId
+		userId: ObjectId,
+		approved: {
+			type: Boolean,
+			default: false
+		},
+		invite: Boolean
 	}],
 
 	/**
@@ -194,12 +199,21 @@ schema.methods.checkPassword = function(password) {
 	return this.encryptPassword(password) === this.hashedPassword;
 };
 
-schema.methods.addFriend = function(username, friendId) {
+schema.methods.addFriend = function(username, friendId, invite) {
 	this.friends.push({
 		username: username,
-		userId: friendId
+		userId: friendId,
+		invite: invite
 	});
 };
+
+schema.methods.acceptRequest = function(friendId) {
+	for (var i = 0; i < this.friends.length; i++) {
+		if (this.friends[i].userId !== friendId) continue;
+
+		this.friends[i].approved = true; return;
+	}
+}
 
 schema.statics.addVisits = function(userId, visitsArray, callback) {
 	var User = this;

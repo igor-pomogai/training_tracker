@@ -7,7 +7,10 @@ angular.module('trackerApp.profileService', [])
 		return {
 			
 			getUserById: function(id, callback) {
-
+				$http.get('users/' + id)
+					.success(function(data) {
+						callback(data);
+					});
 			},
 
 			getUserByName: function(name, callback) {

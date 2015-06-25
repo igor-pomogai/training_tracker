@@ -18,7 +18,9 @@ var trackerApp = angular.module('trackerApp', [
 		'trackerApp.addActivityComponent',
 		'trackerApp.visitsSummaryService',
 		'trackerApp.visitsSummaryComponent',
-		'trackerApp.friendsListComponent'
+		'trackerApp.friendsListComponent',
+		'trackerApp.allUsersService',
+		'trackerApp.allUsersComponent'
 	])
 
 	.config(function($routeProvider, $locationProvider, $httpProvider) {
@@ -49,13 +51,24 @@ var trackerApp = angular.module('trackerApp', [
 				controller: 'dashboardCtrl'
 			});
 
+		//$locationProvider.html5Mode(true);
+
 	});
 
 trackerApp.controller('trackerCtrl', ['$scope', '$location', 
 		function($scope, $location) {
+
+			$scope.isAuthorized = true;
 			
 			$scope.navClass = function(page) {
 				var currentRoute = $location.path().substring(1) || 'dashboard';
+
+				if (currentRoute.indexOf('/') != -1) {
+					currentRoute = currentRoute.slice(0, currentRoute.indexOf('/'))					
+				}
+
+				//console.log('route: ' + currentRoute);
+
 				return page === currentRoute ? 'active' : '';
 			};
 

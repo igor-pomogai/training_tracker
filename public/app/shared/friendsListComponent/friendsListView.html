@@ -1,8 +1,23 @@
 <div class="panel panel-primary">
 	<div class="panel-heading">Friends</div>
 		
-	<ul class="list-group">
-		<a href="" class="list-group-item" ng-repeat="friend in friends">{{ friend.username }} </a>
-	</ul>
+	<div class="list-group">
+		<div class="list-group-item" ng-repeat="friend in friends">
+			{{friend.username}} 
+			
+			<div class="pull-right">
+		  		<button class="btn btn-xs btn-info" ng-click="userInfo(friend)">
+		  			<span class="glyphicon glyphicon-info-sign"></span>
+		  		</button>
+		  		<button class="btn btn-xs btn-primary" ng-click="writeMessage(friend)">
+		  			<span class="glyphicon glyphicon-envelope">
+		  			</button>
+		  		<button class="btn btn-xs btn-warning" ng-click="removeFriend(friend)">
+		  			<span class="glyphicon glyphicon-trash">
+		  		</button>
+		  	</div>
+		  	<div class="clear"></div>
+		</div>
+	</div>
 
 </div>
