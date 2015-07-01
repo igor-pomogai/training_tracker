@@ -1,5 +1,7 @@
 # training_tracker
 
+UPDATE: in branch "angular" project is improved to work on AngularJS.
+
 Project aim is to deliver a product that will track your progress in gym/pool/running and make a competition with your friends or anyone registered in the system.
 
 Also as a secondary aim stands the learning of web technologies.
